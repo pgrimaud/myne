@@ -1,3 +1,5 @@
 <?php
 
-echo 'Hello API';
+require 'core/bootstrap.php';
+
+$x = new Api();
