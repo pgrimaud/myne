@@ -27,8 +27,6 @@
       <script type="text/javascript" src="/lib/select2/select2.js"></script>
       <!-- datepicker -->
       <script src="/lib/datepicker/bootstrap-datepicker.min.js"></script>
-      <!-- shatter -->
-      <script src="/js/jquery.shatter.js"></script>
       
     </div>
   </body>
