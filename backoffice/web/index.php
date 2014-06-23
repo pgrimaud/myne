@@ -6,7 +6,7 @@ require_once '../lib/settings.php';
 
 if (isset($_POST['login']) && isset($_POST['password'])):
 
-  Security::isLogged($referer);
+  Security::isLogged();
 
   header('Location: ' . APP_PATH);
 

@@ -9,7 +9,7 @@ class Connexion {
 
   public function __construct($utf8 = true) {
     $this->connexion = mysql_connect(DB_HOST, DB_USER, DB_PASS);
-    mysql_select_db("", $this->connexion);
+    mysql_select_db(DB_BASE, $this->connexion);
     if ($utf8)
       $this->query("SET NAMES 'UTF8'");
   }
