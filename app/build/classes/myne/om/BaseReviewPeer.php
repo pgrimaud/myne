@@ -24,13 +24,13 @@ abstract class BaseReviewPeer
     const TM_CLASS = 'ReviewTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /** the column name for the id_review field */
     const ID_REVIEW = 'review.id_review';
@@ -40,6 +40,9 @@ abstract class BaseReviewPeer
 
     /** the column name for the id_product field */
     const ID_PRODUCT = 'review.id_product';
+
+    /** the column name for the title field */
+    const TITLE = 'review.title';
 
     /** the column name for the content field */
     const CONTENT = 'review.content';
@@ -72,12 +75,12 @@ abstract class BaseReviewPeer
      * e.g. ReviewPeer::$fieldNames[ReviewPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdReview', 'IdUser', 'IdProduct', 'Content', 'Rate', 'Publication', 'Date', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idReview', 'idUser', 'idProduct', 'content', 'rate', 'publication', 'date', ),
-        BasePeer::TYPE_COLNAME => array (ReviewPeer::ID_REVIEW, ReviewPeer::ID_USER, ReviewPeer::ID_PRODUCT, ReviewPeer::CONTENT, ReviewPeer::RATE, ReviewPeer::PUBLICATION, ReviewPeer::DATE, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_REVIEW', 'ID_USER', 'ID_PRODUCT', 'CONTENT', 'RATE', 'PUBLICATION', 'DATE', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_review', 'id_user', 'id_product', 'content', 'rate', 'publication', 'date', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('IdReview', 'IdUser', 'IdProduct', 'Title', 'Content', 'Rate', 'Publication', 'Date', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idReview', 'idUser', 'idProduct', 'title', 'content', 'rate', 'publication', 'date', ),
+        BasePeer::TYPE_COLNAME => array (ReviewPeer::ID_REVIEW, ReviewPeer::ID_USER, ReviewPeer::ID_PRODUCT, ReviewPeer::TITLE, ReviewPeer::CONTENT, ReviewPeer::RATE, ReviewPeer::PUBLICATION, ReviewPeer::DATE, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_REVIEW', 'ID_USER', 'ID_PRODUCT', 'TITLE', 'CONTENT', 'RATE', 'PUBLICATION', 'DATE', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_review', 'id_user', 'id_product', 'title', 'content', 'rate', 'publication', 'date', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -87,12 +90,12 @@ abstract class BaseReviewPeer
      * e.g. ReviewPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdReview' => 0, 'IdUser' => 1, 'IdProduct' => 2, 'Content' => 3, 'Rate' => 4, 'Publication' => 5, 'Date' => 6, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idReview' => 0, 'idUser' => 1, 'idProduct' => 2, 'content' => 3, 'rate' => 4, 'publication' => 5, 'date' => 6, ),
-        BasePeer::TYPE_COLNAME => array (ReviewPeer::ID_REVIEW => 0, ReviewPeer::ID_USER => 1, ReviewPeer::ID_PRODUCT => 2, ReviewPeer::CONTENT => 3, ReviewPeer::RATE => 4, ReviewPeer::PUBLICATION => 5, ReviewPeer::DATE => 6, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_REVIEW' => 0, 'ID_USER' => 1, 'ID_PRODUCT' => 2, 'CONTENT' => 3, 'RATE' => 4, 'PUBLICATION' => 5, 'DATE' => 6, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_review' => 0, 'id_user' => 1, 'id_product' => 2, 'content' => 3, 'rate' => 4, 'publication' => 5, 'date' => 6, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('IdReview' => 0, 'IdUser' => 1, 'IdProduct' => 2, 'Title' => 3, 'Content' => 4, 'Rate' => 5, 'Publication' => 6, 'Date' => 7, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idReview' => 0, 'idUser' => 1, 'idProduct' => 2, 'title' => 3, 'content' => 4, 'rate' => 5, 'publication' => 6, 'date' => 7, ),
+        BasePeer::TYPE_COLNAME => array (ReviewPeer::ID_REVIEW => 0, ReviewPeer::ID_USER => 1, ReviewPeer::ID_PRODUCT => 2, ReviewPeer::TITLE => 3, ReviewPeer::CONTENT => 4, ReviewPeer::RATE => 5, ReviewPeer::PUBLICATION => 6, ReviewPeer::DATE => 7, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_REVIEW' => 0, 'ID_USER' => 1, 'ID_PRODUCT' => 2, 'TITLE' => 3, 'CONTENT' => 4, 'RATE' => 5, 'PUBLICATION' => 6, 'DATE' => 7, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_review' => 0, 'id_user' => 1, 'id_product' => 2, 'title' => 3, 'content' => 4, 'rate' => 5, 'publication' => 6, 'date' => 7, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -169,6 +172,7 @@ abstract class BaseReviewPeer
             $criteria->addSelectColumn(ReviewPeer::ID_REVIEW);
             $criteria->addSelectColumn(ReviewPeer::ID_USER);
             $criteria->addSelectColumn(ReviewPeer::ID_PRODUCT);
+            $criteria->addSelectColumn(ReviewPeer::TITLE);
             $criteria->addSelectColumn(ReviewPeer::CONTENT);
             $criteria->addSelectColumn(ReviewPeer::RATE);
             $criteria->addSelectColumn(ReviewPeer::PUBLICATION);
@@ -177,6 +181,7 @@ abstract class BaseReviewPeer
             $criteria->addSelectColumn($alias . '.id_review');
             $criteria->addSelectColumn($alias . '.id_user');
             $criteria->addSelectColumn($alias . '.id_product');
+            $criteria->addSelectColumn($alias . '.title');
             $criteria->addSelectColumn($alias . '.content');
             $criteria->addSelectColumn($alias . '.rate');
             $criteria->addSelectColumn($alias . '.publication');

@@ -17,6 +17,7 @@
     <column name="id_review" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
     <column name="id_user" type="INTEGER" primaryKey="true" required="true"/>
     <column name="id_product" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="title" type="VARCHAR" size="255" required="true"/>
     <column name="content" type="LONGVARCHAR" required="true"/>
     <column name="rate" type="SMALLINT" required="true"/>
     <column name="publication" type="TINYINT" required="true" description="1: only the user can see his reviews

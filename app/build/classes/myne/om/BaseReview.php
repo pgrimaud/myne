@@ -48,6 +48,12 @@ abstract class BaseReview extends BaseObject implements Persistent
     protected $id_product;
 
     /**
+     * The value for the title field.
+     * @var        string
+     */
+    protected $title;
+
+    /**
      * The value for the content field.
      * @var        string
      */
@@ -153,6 +159,16 @@ abstract class BaseReview extends BaseObject implements Persistent
     public function getIdProduct()
     {
         return $this->id_product;
+    }
+
+    /**
+     * Get the [title] column value.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -297,6 +313,27 @@ abstract class BaseReview extends BaseObject implements Persistent
     } // setIdProduct()
 
     /**
+     * Set the value of [title] column.
+     *
+     * @param string $v new value
+     * @return Review The current object (for fluent API support)
+     */
+    public function setTitle($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[] = ReviewPeer::TITLE;
+        }
+
+
+        return $this;
+    } // setTitle()
+
+    /**
      * Set the value of [content] column.
      *
      * @param string $v new value
@@ -417,10 +454,11 @@ abstract class BaseReview extends BaseObject implements Persistent
             $this->id_review = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->id_user = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->id_product = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-            $this->content = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->rate = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-            $this->publication = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->date = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->title = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->content = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->rate = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+            $this->publication = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->date = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -429,7 +467,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 7; // 7 = ReviewPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ReviewPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Review object", $e);
@@ -715,6 +753,9 @@ abstract class BaseReview extends BaseObject implements Persistent
         if ($this->isColumnModified(ReviewPeer::ID_PRODUCT)) {
             $modifiedColumns[':p' . $index++]  = '`id_product`';
         }
+        if ($this->isColumnModified(ReviewPeer::TITLE)) {
+            $modifiedColumns[':p' . $index++]  = '`title`';
+        }
         if ($this->isColumnModified(ReviewPeer::CONTENT)) {
             $modifiedColumns[':p' . $index++]  = '`content`';
         }
@@ -746,6 +787,9 @@ abstract class BaseReview extends BaseObject implements Persistent
                         break;
                     case '`id_product`':
                         $stmt->bindValue($identifier, $this->id_product, PDO::PARAM_INT);
+                        break;
+                    case '`title`':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
                     case '`content`':
                         $stmt->bindValue($identifier, $this->content, PDO::PARAM_STR);
@@ -937,15 +981,18 @@ abstract class BaseReview extends BaseObject implements Persistent
                 return $this->getIdProduct();
                 break;
             case 3:
-                return $this->getContent();
+                return $this->getTitle();
                 break;
             case 4:
-                return $this->getRate();
+                return $this->getContent();
                 break;
             case 5:
-                return $this->getPublication();
+                return $this->getRate();
                 break;
             case 6:
+                return $this->getPublication();
+                break;
+            case 7:
                 return $this->getDate();
                 break;
             default:
@@ -980,10 +1027,11 @@ abstract class BaseReview extends BaseObject implements Persistent
             $keys[0] => $this->getIdReview(),
             $keys[1] => $this->getIdUser(),
             $keys[2] => $this->getIdProduct(),
-            $keys[3] => $this->getContent(),
-            $keys[4] => $this->getRate(),
-            $keys[5] => $this->getPublication(),
-            $keys[6] => $this->getDate(),
+            $keys[3] => $this->getTitle(),
+            $keys[4] => $this->getContent(),
+            $keys[5] => $this->getRate(),
+            $keys[6] => $this->getPublication(),
+            $keys[7] => $this->getDate(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aUser) {
@@ -1042,15 +1090,18 @@ abstract class BaseReview extends BaseObject implements Persistent
                 $this->setIdProduct($value);
                 break;
             case 3:
-                $this->setContent($value);
+                $this->setTitle($value);
                 break;
             case 4:
-                $this->setRate($value);
+                $this->setContent($value);
                 break;
             case 5:
-                $this->setPublication($value);
+                $this->setRate($value);
                 break;
             case 6:
+                $this->setPublication($value);
+                break;
+            case 7:
                 $this->setDate($value);
                 break;
         } // switch()
@@ -1080,10 +1131,11 @@ abstract class BaseReview extends BaseObject implements Persistent
         if (array_key_exists($keys[0], $arr)) $this->setIdReview($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setIdUser($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setIdProduct($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setContent($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setRate($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setPublication($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDate($arr[$keys[6]]);
+        if (array_key_exists($keys[3], $arr)) $this->setTitle($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setContent($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setRate($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setPublication($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setDate($arr[$keys[7]]);
     }
 
     /**
@@ -1098,6 +1150,7 @@ abstract class BaseReview extends BaseObject implements Persistent
         if ($this->isColumnModified(ReviewPeer::ID_REVIEW)) $criteria->add(ReviewPeer::ID_REVIEW, $this->id_review);
         if ($this->isColumnModified(ReviewPeer::ID_USER)) $criteria->add(ReviewPeer::ID_USER, $this->id_user);
         if ($this->isColumnModified(ReviewPeer::ID_PRODUCT)) $criteria->add(ReviewPeer::ID_PRODUCT, $this->id_product);
+        if ($this->isColumnModified(ReviewPeer::TITLE)) $criteria->add(ReviewPeer::TITLE, $this->title);
         if ($this->isColumnModified(ReviewPeer::CONTENT)) $criteria->add(ReviewPeer::CONTENT, $this->content);
         if ($this->isColumnModified(ReviewPeer::RATE)) $criteria->add(ReviewPeer::RATE, $this->rate);
         if ($this->isColumnModified(ReviewPeer::PUBLICATION)) $criteria->add(ReviewPeer::PUBLICATION, $this->publication);
@@ -1177,6 +1230,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     {
         $copyObj->setIdUser($this->getIdUser());
         $copyObj->setIdProduct($this->getIdProduct());
+        $copyObj->setTitle($this->getTitle());
         $copyObj->setContent($this->getContent());
         $copyObj->setRate($this->getRate());
         $copyObj->setPublication($this->getPublication());
@@ -1843,6 +1897,7 @@ abstract class BaseReview extends BaseObject implements Persistent
         $this->id_review = null;
         $this->id_user = null;
         $this->id_product = null;
+        $this->title = null;
         $this->content = null;
         $this->rate = null;
         $this->publication = null;

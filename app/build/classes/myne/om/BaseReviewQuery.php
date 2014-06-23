@@ -9,6 +9,7 @@
  * @method ReviewQuery orderByIdReview($order = Criteria::ASC) Order by the id_review column
  * @method ReviewQuery orderByIdUser($order = Criteria::ASC) Order by the id_user column
  * @method ReviewQuery orderByIdProduct($order = Criteria::ASC) Order by the id_product column
+ * @method ReviewQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method ReviewQuery orderByContent($order = Criteria::ASC) Order by the content column
  * @method ReviewQuery orderByRate($order = Criteria::ASC) Order by the rate column
  * @method ReviewQuery orderByPublication($order = Criteria::ASC) Order by the publication column
@@ -17,6 +18,7 @@
  * @method ReviewQuery groupByIdReview() Group by the id_review column
  * @method ReviewQuery groupByIdUser() Group by the id_user column
  * @method ReviewQuery groupByIdProduct() Group by the id_product column
+ * @method ReviewQuery groupByTitle() Group by the title column
  * @method ReviewQuery groupByContent() Group by the content column
  * @method ReviewQuery groupByRate() Group by the rate column
  * @method ReviewQuery groupByPublication() Group by the publication column
@@ -48,6 +50,7 @@
  * @method Review findOneByIdReview(int $id_review) Return the first Review filtered by the id_review column
  * @method Review findOneByIdUser(int $id_user) Return the first Review filtered by the id_user column
  * @method Review findOneByIdProduct(int $id_product) Return the first Review filtered by the id_product column
+ * @method Review findOneByTitle(string $title) Return the first Review filtered by the title column
  * @method Review findOneByContent(string $content) Return the first Review filtered by the content column
  * @method Review findOneByRate(int $rate) Return the first Review filtered by the rate column
  * @method Review findOneByPublication(int $publication) Return the first Review filtered by the publication column
@@ -56,6 +59,7 @@
  * @method array findByIdReview(int $id_review) Return Review objects filtered by the id_review column
  * @method array findByIdUser(int $id_user) Return Review objects filtered by the id_user column
  * @method array findByIdProduct(int $id_product) Return Review objects filtered by the id_product column
+ * @method array findByTitle(string $title) Return Review objects filtered by the title column
  * @method array findByContent(string $content) Return Review objects filtered by the content column
  * @method array findByRate(int $rate) Return Review objects filtered by the rate column
  * @method array findByPublication(int $publication) Return Review objects filtered by the publication column
@@ -150,7 +154,7 @@ abstract class BaseReviewQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_review`, `id_user`, `id_product`, `content`, `rate`, `publication`, `date` FROM `review` WHERE `id_review` = :p0 AND `id_user` = :p1 AND `id_product` = :p2';
+        $sql = 'SELECT `id_review`, `id_user`, `id_product`, `title`, `content`, `rate`, `publication`, `date` FROM `review` WHERE `id_review` = :p0 AND `id_user` = :p1 AND `id_product` = :p2';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -383,6 +387,35 @@ abstract class BaseReviewQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ReviewPeer::ID_PRODUCT, $idProduct, $comparison);
+    }
+
+    /**
+     * Filter the query on the title column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTitle('fooValue');   // WHERE title = 'fooValue'
+     * $query->filterByTitle('%fooValue%'); // WHERE title LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $title The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ReviewQuery The current query, for fluid interface
+     */
+    public function filterByTitle($title = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($title)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $title)) {
+                $title = str_replace('*', '%', $title);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ReviewPeer::TITLE, $title, $comparison);
     }
 
     /**

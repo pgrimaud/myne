@@ -41,6 +41,7 @@ class ReviewTableMap extends TableMap
         $this->addPrimaryKey('id_review', 'IdReview', 'INTEGER', true, null, null);
         $this->addForeignPrimaryKey('id_user', 'IdUser', 'INTEGER' , 'user', 'id_user', true, null, null);
         $this->addForeignPrimaryKey('id_product', 'IdProduct', 'INTEGER' , 'product', 'id_product', true, null, null);
+        $this->addColumn('title', 'Title', 'VARCHAR', true, 255, null);
         $this->addColumn('content', 'Content', 'LONGVARCHAR', true, null, null);
         $this->addColumn('rate', 'Rate', 'SMALLINT', true, null, null);
         $this->addColumn('publication', 'Publication', 'TINYINT', true, null, null);
