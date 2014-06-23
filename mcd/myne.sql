@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `myne`.`review` (
   `id_review` INT NOT NULL AUTO_INCREMENT,
   `id_user` INT NOT NULL,
   `id_product` INT NOT NULL,
+  `title` VARCHAR(255) NOT NULL ,
   `content` TEXT NOT NULL,
   `rate` SMALLINT NOT NULL,
   `publication` TINYINT NOT NULL COMMENT '1: only the user can see his reviews' /* comment truncated */ /*2: only user's friends can see his reviews
