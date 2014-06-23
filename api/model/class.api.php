@@ -45,52 +45,57 @@ Class Api {
     //datatype
     $data = array('application/xml' => 'xml', 'application/json' => 'json');
 
-    //content type
-    foreach ($headers as $header) {
-      if (strpos($header, 'Content-Type:')) {
-        $this->headers['content'] = trim(str_replace('Content-Type:', '', $data[$header]));
+    if (isset($_SERVER['CONTENT_TYPE'])) {
+      if (isset($data[$_SERVER['CONTENT_TYPE']])) {
+        $this->headers['content'] = $data[$_SERVER['CONTENT_TYPE']];
+      } else {
+        $this->error('Unknow Header Content-Type');
       }
-    }
-
-    //if not content type
-    if (!isset($this->headers['content']))
+    } else {
       $this->error('Missing Header Content-Type');
+    }
   }
 
   public function auth($headers) {
 
-    $found = false;
+    if (isset($_SERVER['HTTP_X_MYNE_TOKEN'])) {
 
-    foreach ($headers as $header) {
-      if (strpos($header, 'X-Myne-Token:')) {
+      Connexion::getInstance()->query("SELECT id_customer FROM `customer` WHERE api_token = '" . addslashes($_SERVER['HTTP_X_MYNE_TOKEN']) . "' ");
 
-        $found = true;
+      $id = Connexion::getInstance()->result();
 
-        Connexion::getInstance()->query("SELECT id_customer FROM `customer` WHERE api_token = '" . trim(str_replace('X-Myne-Token:', '', $header)) . "' ");
-        $id = Connexion::getInstance()->result();
+      if ((int) $id > 0)
+        $this->id_client = $id;
+      else
+        $this->error('Invalid token');
+    }else {
 
-        if ((int) $id > 0)
-          $this->id_client = $id;
-        else
-          $this->error('Invalid token');
-      }
-    }
-
-    if ($found == false)
       $this->error('Invalid token');
+    }
   }
 
   public function error($message) {
 
     header("HTTP/1.0 404 Not Found");
-    header("Content-type: text/xml; charset=utf-8");
 
-    $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<error></error>");
-    $xml->addChild('message', $message);
+    if ($this->headers['content'] == 'xml') {
 
-    echo $xml->asXML();
+      header("Content-type: text/xml; charset=utf-8");
 
+      $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<error></error>");
+      $xml->addChild('message', $message);
+
+      echo $xml->asXML();
+    } else {
+
+      header("Content-type: text/json;");
+      echo json_encode(array('error' => $message));
+    }
     exit;
+  }
+
+  public function getProducts() {
+    
   }
 
 }
