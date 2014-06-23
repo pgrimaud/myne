@@ -21,9 +21,9 @@ if (!isset($_SESSION['login'])):
 
 else:
 
-  $utilisateur = new Client($_SESSION['login']);
+  $customer = new Client($_SESSION['login']);
 
-  $frontController = new FrontController($utilisateur);
+  $frontController = new FrontController($customer);
   $controller = $frontController->getChildController();
   include_once $controller->getView();
   
