@@ -93,7 +93,7 @@ Class Api {
 
   public function returnData($data) {
 
-    $header = ($this->headers['content'] == 'json') ? 'Content-type: text/json;' : 'Content-type: text/xml; charset=utf-8';
+    $header = ($this->headers['content'] == 'json') ? 'Content-type: text/json' : 'Content-type: text/xml; charset=utf-8';
     header($header);
 
     echo $data;
@@ -109,19 +109,138 @@ Class Api {
 
     $products = Connexion::getInstance()->fetchAll();
 
-    if ($this->headers['content'] == 'xml') {
+    if (sizeof($products) > 0) {
 
-      $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<products></products>");
-      foreach ($products as $product) {
-        $prod = $xml->addChild('product');
-        foreach ($product as $field => $value)
-          $prod->addChild($field, $value);
+      if ($this->headers['content'] == 'xml') {
+
+        $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<products></products>");
+        foreach ($products as $product) {
+          $prod = $xml->addChild('product');
+          foreach ($product as $field => $value)
+            $prod->addChild($field, $value);
+        }
+        $this->returnData($xml->asXML());
+      } else {
+
+        $this->returnData(json_encode(array('products' => $products)));
       }
-      $this->returnData($xml->asXML());
     } else {
 
-      $this->returnData(json_encode(array('products' => $products)));
+      $this->error('No products available');
     }
   }
 
+  public function getProduct() {
+
+    if (isset($this->params[2]) && $this->params[2]) {
+
+      Connexion::getInstance()->query("SELECT p.id_product as SKU, p.ean_code, p.name FROM product p"
+              . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+              . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+              . " WHERE c.id_customer = '" . $this->id_client . "' "
+              . " AND p.id_product = '" . addslashes($this->params[2]) . "' ");
+
+      $product = Connexion::getInstance()->fetch();
+
+      if (isset($product['SKU'])) {
+
+        if ($this->headers['content'] == 'xml') {
+
+          $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<product></product>");
+          foreach ($product as $field => $value)
+            $xml->addChild($field, $value);
+
+          $this->returnData($xml->asXML());
+        } else {
+
+          $this->returnData(json_encode(array('product' => $product)));
+        }
+      } else {
+        $this->error('No product available with :idproduct ' . addslashes($this->params[2]));
+      }
+    } else {
+      $this->error('Missing parameter :idproduct');
+    }
+  }
+
+  public function getReviews() {
+
+    if (isset($this->get['id_product']) && $this->get['id_product']) {
+      Connexion::getInstance()->query("SELECT p.id_product FROM product p"
+              . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+              . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+              . " WHERE c.id_customer = '" . $this->id_client . "' "
+              . " AND p.id_product = '" . addslashes($this->get['id_product']) . "' ");
+
+      $id = Connexion::getInstance()->result();
+      if ((int) $id > 0) {
+
+        Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+                . " LEFT JOIN product p ON r.id_product = p.id_product"
+                . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+                . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+                . " LEFT JOIN user u ON r.id_user = u.id_user"
+                . " WHERE c.id_customer = '" . $this->id_client . "'"
+                . " AND p.id_product = '" . addslashes($this->get['id_product']) . "' ");
+
+        $reviews = Connexion::getInstance()->fetchAll();
+
+        if (sizeof($reviews) > 0) {
+
+
+          if ($this->headers['content'] == 'xml') {
+
+            $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<reviews></reviews>");
+            foreach ($reviews as $review) {
+              $revi = $xml->addChild('review');
+              foreach ($review as $field => $value)
+                $revi->addChild($field, $value);
+            }
+            $this->returnData($xml->asXML());
+          } else {
+
+            $this->returnData(json_encode(array('reviews' => $reviews)));
+          }
+        } else {
+          $this->error('No reviews available');
+        }
+      } else {
+        $this->error('No product available with :idproduct ' . addslashes($this->params[2]));
+      }
+    } else {
+      $this->error('Missing parameter :id_product');
+    }
+  }
+
+  public function getReview() {
+
+    if (isset($this->params[2]) && $this->params[2]) {
+      Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+              . " LEFT JOIN product p ON r.id_product = p.id_product"
+              . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+              . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+              . " LEFT JOIN user u ON r.id_user = u.id_user"
+              . " WHERE c.id_customer = '" . $this->id_client . "'"
+              . " AND r.id_review = '" . addslashes($this->params[2]) . "' ");
+
+      $review = Connexion::getInstance()->fetch();
+
+      if (isset($review['id_review'])) {
+
+        if ($this->headers['content'] == 'xml') {
+
+          $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<review></review>");
+          foreach ($review as $field => $value)
+            $xml->addChild($field, $value);
+
+          $this->returnData($xml->asXML());
+        } else {
+
+          $this->returnData(json_encode(array('review' => $review)));
+        }
+      } else {
+        $this->error('No review available with :id_review ' . addslashes($this->params[2]));
+      }
+    }
+  }
 }
