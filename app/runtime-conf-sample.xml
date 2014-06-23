@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <log>
+    <type>file</type>
+  <name>/var/www/log/propel.log</name>
+    <ident>propel</ident>
+    <level>7</level>
+  </log>
+  <propel>
+    <datasources default="universal_music">
+      <datasource id="universal_music">
+        <adapter>mysql</adapter>
+        <connection>
+          <dsn>mysql:host=localhost;dbname=myne</dsn>
+          <user>user</user>
+          <password>password</password>
+      <settings>
+        <setting id="charset">utf8</setting>
+      </settings>
+      <options>
+        <option id="MYSQL_ATTR_INIT_COMMAND">SET NAMES utf8 COLLATE utf8_unicode_ci</option>
+      </options>
+        </connection>
+      </datasource>
+    </datasources>
+  </propel>
+</config>
+
