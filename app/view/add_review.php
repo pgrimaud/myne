@@ -8,10 +8,14 @@
         </h3>
         <form role="form">
             <div class="form-group">
-                 <label for="exampleInputEmail1">Email address</label><input type="email" class="form-control" id="exampleInputEmail1">
+                 <label for="reviewTitle">Titre :</label><input type="text" class="form-control" id="exampleInputEmail1">
             </div>
             <div class="form-group">
-                 <label for="exampleInputPassword1">Password</label><input type="password" class="form-control" id="exampleInputPassword1">
+                 <label for="reviewContent">Votre avis :</label><textarea rows="3" class="form-control" id="reviewContent"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="reviewRate">Notez ce produit :</label>
+                <input type="number" name="reviewRate" id="reviewRate" class="rating" />
             </div>
             <div class="form-group">
                  <label for="exampleInputFile">File input</label><input type="file" id="exampleInputFile">

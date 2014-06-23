@@ -13,6 +13,7 @@
         </footer>
         <script src="<?php echo VIEW_URL; ?>/js/vendor/bootstrap.min.js"></script>
         <script src="<?php echo VIEW_URL; ?>/js/vendor/alertify.min.js"></script>
+        <script src="<?php echo VIEW_URL; ?>/js/vendor/bootstrap-rating-input.js"></script>
         <script src="<?php echo VIEW_URL; ?>/js/main.js"></script>
     </body>
 </html>
