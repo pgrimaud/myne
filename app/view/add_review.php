@@ -15,14 +15,21 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Modal title</h4>
+                        <h4 class="modal-title">C'est fâcheux, mais ce produit n'a pas été trouvé... Ajoutez le! :^)</h4>
                     </div>
                     <div class="modal-body">
-                        <p>One fine body&hellip;</p>
+                        <form role="form" id="modalProductForm">
+                            <div class="form-group">
+                                 <label for="productName">Nom du produit</label><input type="text" class="form-control" id="productName">
+                            </div>
+                            <div class="form-group">
+                                 <label for="productEan">Code Ean</label><input type="text" class="form-control" id="productEan">
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Plus tard...</button>
+                        <button type="button" class="btn btn-primary" id="btnAddProduct">Ajouter !</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
