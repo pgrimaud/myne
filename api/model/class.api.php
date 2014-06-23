@@ -175,7 +175,7 @@ Class Api {
       $id = Connexion::getInstance()->result();
       if ((int) $id > 0) {
 
-        Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+        Connexion::getInstance()->query("SELECT r.id_review, r.title, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
                 . " LEFT JOIN product p ON r.id_product = p.id_product"
                 . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
                 . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
@@ -215,7 +215,7 @@ Class Api {
   public function getReview() {
 
     if (isset($this->params[2]) && $this->params[2]) {
-      Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+      Connexion::getInstance()->query("SELECT r.id_review, r.title, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
               . " LEFT JOIN product p ON r.id_product = p.id_product"
               . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
               . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
@@ -243,4 +243,89 @@ Class Api {
       }
     }
   }
+
+  public function getComments() {
+    if (isset($this->get['id_review']) && $this->get['id_review']) {
+      Connexion::getInstance()->query("SELECT r.id_review FROM review r"
+              . " LEFT JOIN product p ON r.id_product = p.id_product"
+              . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+              . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+              . " LEFT JOIN user u ON r.id_user = u.id_user"
+              . " WHERE c.id_customer = '" . $this->id_client . "'"
+              . " AND p.id_product = '" . addslashes($this->get['id_review']) . "' ");
+
+      $id = Connexion::getInstance()->result();
+      if ((int) $id > 0) {
+
+        Connexion::getInstance()->query("SELECT com.id_comment, com.content, com.date, u.id_facebook, u.first_name, u.last_name FROM comment com"
+                . " LEFT JOIN review r ON r.id_review = com.id_review"
+                . " LEFT JOIN product p ON r.id_product = p.id_product"
+                . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+                . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+                . " LEFT JOIN user u ON com.id_user = u.id_user"
+                . " WHERE c.id_customer = '" . $this->id_client . "'"
+                . " AND p.id_product = '" . addslashes($this->get['id_review']) . "' ");
+
+        $comments = Connexion::getInstance()->fetchAll();
+
+        if (sizeof($comments) > 0) {
+
+
+          if ($this->headers['content'] == 'xml') {
+
+            $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<comments></comments>");
+            foreach ($comments as $comment) {
+              $comm = $xml->addChild('comment');
+              foreach ($comment as $field => $value)
+                $comm->addChild($field, $value);
+            }
+            $this->returnData($xml->asXML());
+          } else {
+
+            $this->returnData(json_encode(array('comments' => $comments)));
+          }
+        } else {
+          $this->error('No comments available');
+        }
+      } else {
+        $this->error('No review available with :id_review ' . addslashes($this->params[2]));
+      }
+    } else {
+      $this->error('Missing parameter :id_review');
+    }
+  }
+
+  public function getComment() {
+
+    if (isset($this->params[2]) && $this->params[2]) {
+      Connexion::getInstance()->query("SELECT com.id_comment, com.content, com.date, u.id_facebook, u.first_name, u.last_name FROM comment com"
+              . " LEFT JOIN review r ON r.id_review = com.id_review"
+              . " LEFT JOIN product p ON r.id_product = p.id_product"
+              . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+              . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+              . " LEFT JOIN user u ON com.id_user = u.id_user"
+              . " WHERE c.id_customer = '" . $this->id_client . "'"
+              . " AND p.id_product = '" . addslashes($this->params[2]) . "' ");
+
+      $comment = Connexion::getInstance()->fetch();
+
+      if (isset($comment['id_comment'])) {
+
+        if ($this->headers['content'] == 'xml') {
+
+          $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<comment></comment>");
+          foreach ($comment as $field => $value)
+            $xml->addChild($field, $value);
+
+          $this->returnData($xml->asXML());
+        } else {
+
+          $this->returnData(json_encode(array('comment' => $comment)));
+        }
+      } else {
+        $this->error('No comment available with :id_comment ' . addslashes($this->params[2]));
+      }
+    }
+  }
+
 }
