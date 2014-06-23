@@ -4,7 +4,7 @@
 $conf = array (
   'datasources' =>
   array (
-    'universal_music' =>
+    'myne' =>
     array (
       'adapter' => 'mysql',
       'connection' =>

@@ -7,7 +7,7 @@
     <level>7</level>
   </log>
   <propel>
-    <datasources default="universal_music">
+    <datasources default="myne">
       <datasource id="universal_music">
         <adapter>mysql</adapter>
         <connection>
