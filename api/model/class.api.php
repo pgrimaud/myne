@@ -4,7 +4,7 @@ Class Api {
 
   private $get = array();
   private $post = array();
-  private $headers = array();
+  private $headers = array('content' => '');
   private $params;
   private $id_client;
   private $export = '';
@@ -78,24 +78,50 @@ Class Api {
 
     header("HTTP/1.0 404 Not Found");
 
-    if ($this->headers['content'] == 'xml') {
+    if ($this->headers['content'] == 'json') {
 
-      header("Content-type: text/xml; charset=utf-8");
+      $this->returnData(json_encode(array('error' => array('error' => $message))));
+    } else {
 
       $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<error></error>");
       $xml->addChild('message', $message);
 
-      echo $xml->asXML();
-    } else {
-
-      header("Content-type: text/json;");
-      echo json_encode(array('error' => $message));
+      $this->returnData($xml->asXML());
     }
     exit;
   }
 
+  public function returnData($data) {
+
+    $header = ($this->headers['content'] == 'json') ? 'Content-type: text/json;' : 'Content-type: text/xml; charset=utf-8';
+    header($header);
+
+    echo $data;
+    exit;
+  }
+
   public function getProducts() {
-    
+
+    Connexion::getInstance()->query("SELECT p.id_product as SKU, p.ean_code, p.name FROM product p"
+            . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
+            . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
+            . " WHERE c.id_customer = '" . $this->id_client . "' ");
+
+    $products = Connexion::getInstance()->fetchAll();
+
+    if ($this->headers['content'] == 'xml') {
+
+      $xml = new SimpleXMLElement("<?xml version='1.0' ?>" . "\n" . "<products></products>");
+      foreach ($products as $product) {
+        $prod = $xml->addChild('product');
+        foreach ($product as $field => $value)
+          $prod->addChild($field, $value);
+      }
+      $this->returnData($xml->asXML());
+    } else {
+
+      $this->returnData(json_encode(array('products' => $products)));
+    }
   }
 
 }
