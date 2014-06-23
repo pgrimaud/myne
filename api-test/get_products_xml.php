@@ -1,14 +1,15 @@
 <?php
 
+header('Content-type: text/xml; charset=utf-8');
+
 $token_example = '6a52f85027a5477719d6c650ea3338fd';
 
 $uri = 'http://myne.api/products';
 
 $headers = array(
     "X-Myne-Token:" . $token_example,
-    "Content-Type: application/json"
+    "Content-Type: application/xml"
 );
-
 
 $ch = curl_init($uri);
 
