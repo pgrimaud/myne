@@ -4,9 +4,14 @@ Class Api {
 
   private $get = array();
   private $post = array();
+  private $headers = array();
   private $params;
+  private $id_client;
+  private $export = '';
 
   public function __construct() {
+
+    $this->setHeaders();
 
     $this->get = $_GET;
     $this->post = $_POST;
@@ -30,8 +35,49 @@ Class Api {
     }
   }
 
-  public function auth() {
-    
+  public function setHeaders() {
+
+    $headers = headers_list();
+
+    //auth first
+    $this->auth($headers);
+
+    //datatype
+    $data = array('application/xml' => 'xml', 'application/json' => 'json');
+
+    //content type
+    foreach ($headers as $header) {
+      if (strpos($header, 'Content-Type:')) {
+        $this->headers['content'] = trim(str_replace('Content-Type:', '', $data[$header]));
+      }
+    }
+
+    //if not content type
+    if (!isset($this->headers['content']))
+      $this->error('Missing Header Content-Type');
+  }
+
+  public function auth($headers) {
+
+    $found = false;
+
+    foreach ($headers as $header) {
+      if (strpos($header, 'X-Myne-Token:')) {
+
+        $found = true;
+
+        Connexion::getInstance()->query("SELECT id_customer FROM `customer` WHERE api_token = '" . trim(str_replace('X-Myne-Token:', '', $header)) . "' ");
+        $id = Connexion::getInstance()->result();
+
+        if ((int) $id > 0)
+          $this->id_client = $id;
+        else
+          $this->error('Invalid token');
+      }
+    }
+
+    if ($found == false)
+      $this->error('Invalid token');
   }
 
   public function error($message) {
