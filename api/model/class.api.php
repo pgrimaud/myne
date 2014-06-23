@@ -175,7 +175,7 @@ Class Api {
       $id = Connexion::getInstance()->result();
       if ((int) $id > 0) {
 
-        Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+        Connexion::getInstance()->query("SELECT r.id_review, r.title, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
                 . " LEFT JOIN product p ON r.id_product = p.id_product"
                 . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
                 . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
@@ -215,7 +215,7 @@ Class Api {
   public function getReview() {
 
     if (isset($this->params[2]) && $this->params[2]) {
-      Connexion::getInstance()->query("SELECT r.id_review, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
+      Connexion::getInstance()->query("SELECT r.id_review, r.title, r.content, r.rate, r.date, u.id_facebook, u.first_name, u.last_name FROM review r"
               . " LEFT JOIN product p ON r.id_product = p.id_product"
               . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product "
               . " LEFT JOIN customer c ON c.id_customer = cp.id_customer"
