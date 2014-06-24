@@ -12,7 +12,7 @@ Class Review {
 
     $query .= ($id_product != false) ? " AND p.id_product = '" . $id_product . "' " : "";
     
-    $query .= ($orderby != false) ? " ORDER BY " . $orderby : " ";
+    $query .= ($orderby != false) ? " ORDER BY " . $orderby." DESC " : "";
     $st = ($start != false) ? $start : 0;
 
     $query .= ($limit != false) ? " LIMIT " . $st . "," . $limit : " ";

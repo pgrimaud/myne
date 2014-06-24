@@ -33,7 +33,7 @@
     <div class="row-fluid" style="margin-top:0px;">
       <div class="span6">
         <h3 class="heading">Produits populaires</h3>
-        
+
       </div>
       <div class="span6">
         <h3 class="heading">Derniers Avis</h3>
@@ -43,7 +43,7 @@
               Avis du produit : <label class="badge badge-inverse"><?php echo $review['name']; ?></label><br/>
               Par : <?php echo $review['first_name']; ?> <?php echo $review['last_name']; ?>
               le <?php echo $review['date']; ?><br/>
-              Note : <label class="badge badge-warning"><?php echo $review['rate']; ?>/5</label><br/>
+              Note : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo $review['rate']; ?>/5</label><br/>
               Titre : <?php echo $review['title']; ?><br/>
               Contenu : <?php echo $review['content']; ?>
               <a href="/review/show/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-top:20px;margin-right:20px;">Voir les avis de ce produit</label></a>
