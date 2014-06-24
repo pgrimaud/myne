@@ -32,6 +32,5 @@ if(isset($_POST["addProduct"]) && $_POST["addProduct"]) {
             ->setEanCode($_POST["productEan"])
             ->save();
 
-    // echo $product->getIdProduct();
     echo json_encode($product->toArray());
 }

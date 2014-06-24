@@ -106,10 +106,11 @@ $("#wrapper").on("click", "#btnAddProduct", function(e) {
 
 $("form[name=addReview]").submit(function(e) {
     e.preventDefault()
-    var idProduct = $("#infoProduct").attr("data-id-product")
-    ,   reviewTitle = $("#reviewTitle").val()
+    var idProduct     = $("#infoProduct").attr("data-id-product")
+    ,   reviewTitle   = $("#reviewTitle").val()
     ,   reviewContent = $("#reviewContent").val()
-    ,   reviewRate = $("#reviewRate").val()
+    ,   reviewRate    = $("#reviewRate").val()
+    ,   idUser        = $("#idUser").val()
 
     if($("input[name=userPublication]").val() == 0) {
         var reviewPublication = $("input[name=radioPublication]:checked", "#formAddReview").val()
@@ -144,7 +145,8 @@ $("form[name=addReview]").submit(function(e) {
             "reviewTitle"       : reviewTitle,
             "reviewContent"     : reviewContent,
             "reviewRate"        : reviewRate,
-            "reviewPublication" : reviewPublication
+            "reviewPublication" : reviewPublication,
+            "idUser"            : idUser
         },
         function(data) {
             alertify.success("Votre avis a été créé avec succès, merci!")
