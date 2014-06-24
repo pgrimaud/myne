@@ -3,9 +3,18 @@
 class IndexController extends FrontController {
 
   protected function IndexAction() {
-    $this->data->kpi['sum_products'] = sizeof(Product::get($this->client->getID()));
-    $this->data->kpi['sum_reviews'] = sizeof(Review::get($this->client->getID()));
-    $this->data->kpi['sum_comments'] = sizeof(Comment::get($this->client->getID()));
+
+    $products = Product::get($this->client->getID());
+    $reviews = Review::get($this->client->getID());
+    $comments = Comment::get($this->client->getID());
+    
+    //for amcharts
+    $this->data->chart['review'] = Statistic::amchartsDisplay($reviews, 'review');
+    $this->data->chart['comment'] = Statistic::amchartsDisplay($comments, 'comment');
+    
+    $this->data->kpi['sum_products'] = sizeof($products);
+    $this->data->kpi['sum_reviews'] = sizeof($reviews);
+    $this->data->kpi['sum_comments'] = sizeof($comments);
     $this->data->kpi['average_rate'] = (float) round(Review::averageRate($this->client->getID()), 2);
 
     //color
