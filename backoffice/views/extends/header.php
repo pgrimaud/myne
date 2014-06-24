@@ -45,7 +45,10 @@
                 <div class="nav-collapse">
                   <ul class="nav">
                     <li>
-                      <a href="#">Link</a>
+                      <a href="/product/all/">Vos produits</a>
+                    </li>
+                    <li>
+                      <a href="/product/add/">Ajouter un produit</a>
                     </li>
                   </ul>
                 </div>

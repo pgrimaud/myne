@@ -5,14 +5,12 @@
   <div class="main_content">
     <div class="row-fluid">
       <div class="span12">
-        <h3 class="heading">Erreur 404 - Page introuvable</h3>
-        <div class="alert alert-danger">
-          C'est triste, non? :^)
+        <h3 class="heading">Vos produits</h3>
+        <div class="alert alert-warning">
+          Vous pouvez ajouter un nouveau produit <a href='/product/add/'>ici</a>.
         </div>
       </div>
     </div>
-
-
   </div>
 </div>
 
