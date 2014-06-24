@@ -54,7 +54,31 @@
         </div>
       </div>
     </form>
+    <div class="row-fluid">
+      <div class="span12">
+        <h3 class="heading">Ajouter des produits grâce à un flux de données</h3>
+      </div>
+    </div>
+    <div class="alert alert-info">
+      Les flux doivent être au format XML, txt ou CSV. <a href="/help/" target="blank">(Plus d'informations)</a>
+    </div>
+    <form method="POST" action="#" onsubmit="return confirm('Avez-vous bien complété tous les champs?');">
+      <div class="row-fluid" style="margin-top:0px;">
+        <div class="span2"></div>
+        <div class="span9"></div>
+        <div class="span2">
+          <p style="float:right;">URL du Flux :</p>
+        </div>
+        <div class="span9">
+          <input type="text" name="feed" placeholder="http://monsite.com/flux.xml" class="span5" />
+        </div>
+        <div class="span2" style="margin-top:5px;">
+        </div>
+        <div class="span9" style="margin-top:5px;">
+          <input type="submit" class="btn btn-inverse" value="Importer les produits" />
+        </div>
+      </div>
+    </form>
   </div>
 </div>
-
 <?php add('footer'); ?>

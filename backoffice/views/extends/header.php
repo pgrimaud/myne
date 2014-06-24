@@ -50,6 +50,9 @@
                     <li>
                       <a href="/product/add/">Ajouter un produit</a>
                     </li>
+                    <li>
+                      <a href="/help/">Aide</a>
+                    </li>
                   </ul>
                 </div>
               </nav>
