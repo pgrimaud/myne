@@ -12,9 +12,10 @@ class IndexController extends FrontController {
     $this->data->color = array('error', 'error', 'warning', 'warning', 'success', 'success');
 
     //last reviews
-    $this->data->last_reviews = Review::get($this->client->getID(), false, 'r.`date`', '0', '5');
+    $this->data->last_reviews = Review::get($this->client->getID(), false, 'r.`date`', '0', '3');
 
-    //last commentaires
+    //top products
+    $this->data->top_products = Product::topProducts($this->client->getID());
   }
 
   protected function LogoutAction() {

@@ -30,6 +30,20 @@ class Product {
     return Connexion::getInstance()->fetchAll();
   }
 
+  public static function topProducts($id_client) {
+
+    $query = "SELECT p.*, COUNT(r.id_review) as nb_review, AVG(r.rate) as rate, c.name_categorie FROM product p"
+            . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product"
+            . " LEFT JOIN categorie c ON c.id_categorie = p.id_categorie"
+            . " LEFT JOIN review r ON r.id_product = p.id_product"
+            . " WHERE cp.id_customer = '" . $id_client . "'"
+            . " GROUP BY p.id_product ORDER BY nb_review DESC LIMIT 0,3 ";
+
+    Connexion::getInstance()->query($query);
+
+    return Connexion::getInstance()->fetchAll();
+  }
+
   public static function checkProduct($id_product, $id_client) {
 
     Connexion::getInstance()->query("SELECT id_product FROM customer_product WHERE id_product = '" . $id_product . "' AND id_customer = '" . $id_client . "' ");
