@@ -1,4 +1,8 @@
-$("#searchProduct, #reviewTitle, #reviewContent").keyup(function() {
+function isInt(n) {
+    return n % 1 === 0;
+}
+
+$("#searchProduct, #reviewTitle, #reviewContent, #productName, #productEan").keyup(function() {
     if($(this).parent().hasClass("has-error"))
         $(this).parent().removeClass("has-error")
 })
@@ -6,6 +10,12 @@ $("#searchProduct, #reviewTitle, #reviewContent").keyup(function() {
 $("#btn_searchProduct").click(function(e) {
     e.preventDefault()
     var data = $("#searchProduct").val()
+
+    if(data.length <= 0) {
+        alertify.error("Vous n'avez pas saisi de code ean ou de nom du produit")
+        $("#searchProduct").parent().addClass("has-error")
+        return false
+    }
 
     $.post(
         "../handler/product.php",
@@ -25,16 +35,16 @@ $("#btn_searchProduct").click(function(e) {
             } else {
                 obj = JSON.parse(data);
                 $.each(obj, function(key, value) {
-                    $("#formSearchProduct").hide("slow")
                     if (key == "IdProduct")
                         $("#infoProduct").attr("data-id-product", value)
                     else if (key == "EanCode")
                         $("#infoProduct > p").text(value)
                     else if(key == "Name")
                         $("#infoProduct > h2").text(value)
-                    $("#infoProduct").show("slow")
-                    $("form[name=addReview] > button").removeClass("disabled")
                 });
+                $("#formSearchProduct").hide("slow")
+                $("#infoProduct").show("slow")
+                $("form[name=addReview] > button").removeClass("disabled")
             }
         }
     )
@@ -48,7 +58,50 @@ $("#btn_searchAnotherProduct").click(function() {
 
 $("#wrapper").on("click", "#btnAddProduct", function(e) {
     e.preventDefault()
-    console.log("uehs")
+    var productName = $("#productName").val()
+    ,   productEan = $("#productEan").val()
+
+    if(productName.length <= 0) {
+        alertify.error("Veuillez indiquer le nom du produit")
+        $("#productName").parent().addClass("has-error")
+        return false
+    }
+    if(productEan.length <= 0) {
+        alertify.error("Veuillez indiquer le code ean du produit")
+        $("#productEan").parent().addClass("has-error")
+        return false
+    } else {
+        if(!isInt(productEan) || productEan.length < 13 || productEan.length > 13) {
+            alertify.error("Il semble que le code ean renseigné ne soit pas au bon format")
+            $("#productEan").parent().addClass("has-error")
+            return false
+        }
+    }
+
+    $.post(
+        "../handler/product.php",
+        {
+            "addProduct" : true,
+            "productName" : productName,
+            "productEan" : productEan
+        },
+        function(data) {
+            obj = JSON.parse(data);
+            $.each(obj, function(key, value) {
+                if (key == "IdProduct")
+                    $("#infoProduct").attr("data-id-product", value)
+                else if (key == "EanCode")
+                    $("#infoProduct > p").text(value)
+                else if(key == "Name")
+                    $("#infoProduct > h2").text(value)
+            });
+            alertify.success("Produit ajouté avec succès!")
+            $("#addProductModal").modal("toggle")
+            $("#formSearchProduct").hide("slow")
+            $("#infoProduct").show("slow")
+            $("form[name=addReview] > button").removeClass("disabled")
+        }
+    )
 })
 
 $("form[name=addReview]").submit(function(e) {
