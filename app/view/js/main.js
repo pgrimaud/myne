@@ -1,4 +1,4 @@
-$("#searchProduct").keyup(function() {
+$("#searchProduct, #reviewTitle, #reviewContent").keyup(function() {
     if($(this).parent().hasClass("has-error"))
         $(this).parent().removeClass("has-error")
 })
@@ -64,6 +64,25 @@ $("form[name=addReview]").submit(function(e) {
         var reviewPublication = $("input[name=userPublication]").val()
     }
 
+    if(reviewTitle.length <= 0) {
+        alertify.error("Merci de renseigner un titre ou un commentaire court pour votre avis")
+        $("#reviewTitle").parent().addClass("has-error")
+        return false
+    }
+    if(reviewContent.length <= 0) {
+        alertify.error("Merci de rédiger votre avis")
+        $("#reviewContent").parent().addClass("has-error")
+        return false
+    }
+    if(reviewRate.length <= 0) {
+        alertify.error("Merci de donner une note au produit")
+        return false
+    }
+    if(!reviewPublication) {
+        alertify.error("Merci d'indiquer la visibilité de votre avis")
+        return false
+    }
+
     $.post(
         "../handler/review.php",
         {
@@ -75,9 +94,8 @@ $("form[name=addReview]").submit(function(e) {
             "reviewPublication" : reviewPublication
         },
         function(data) {
-            console.log(data)
+            alertify.success("Votre avis a été créé avec succès, merci!")
+            setTimeout(function() { window.location.reload(); }, 2000);
         }
     )
 })
-
-
