@@ -14,7 +14,10 @@ class FrontController {
   public $lang;
   
   public function __construct(Client $client) {
-
+    
+    //fix empty object
+    $this->data = new stdClass();
+    
     $this->client = $client;
     $this->params = explode('/', $_SERVER['REQUEST_URI']);
     $this->post_data = $_POST;

@@ -16,7 +16,7 @@
           <p style="float:right;">Nom du product :</p>
         </div>
         <div class="span9">
-          <input type="text" name="client" placeholder="Maillot de bain 'Stecy'" class="span5" />
+          <input type="text" name="name" placeholder="Maillot de bain 'Stecy'" class="span5" />
         </div>
         <div class="span2">
           <p style="float:right;">Url de l'image :</p>
@@ -28,30 +28,29 @@
           <p style="float:right;">Marque :</p>
         </div>
         <div class="span9">
-          <input type="text" name="url" placeholder="Maillot Malin" class="span5" />
+          <input type="text" name="brand" placeholder="Maillot Malin" class="span5" />
         </div>
         <div class="span2">
           <p style="float:right;">EAN 13 :</p>
         </div>
         <div class="span9">
-          <input type="text" name="url" placeholder="1234567891234" class="span5" />
+          <input type="text" name="ean" placeholder="1234567891234" class="span5" />
         </div>
         <div class="span2">
-          <p style="float:right;">Site Google :</p>
+          <p style="float:right;">Catégorie :</p>
         </div>
         <div class="span9">
-          <select name="google">
-            <option value=".fr">.FR</option>
-            <option value=".com">.COM</option>
-            <option value=".de">.DE</option>
-            <option value=".co.uk">.CO.UK</option>
-            <option value=".es">.ES</option>
+          <select name="categorie" class="span5">
+            <option></option>
+            <?php foreach ($controller->getData()->categories as $id => $name): ?>
+              <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+            <?php endforeach; ?>
           </select>
         </div>
         <div class="span2" style="margin-top:5px;">
         </div>
         <div class="span9" style="margin-top:5px;">
-          <input type="submit" class="btn btn-inverse" value="Lancer l'analyse" />
+          <input type="submit" class="btn btn-inverse" value="Ajouter le produit" />
         </div>
       </div>
     </form>

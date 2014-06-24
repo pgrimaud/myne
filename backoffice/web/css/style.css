@@ -655,3 +655,7 @@
 		.nbDaysButton { display: none; }
 
 #pages td{vertical-align:middle;}
+
+/* OVERRIDE :^) */
+
+.textcenter{text-align:center !important;}

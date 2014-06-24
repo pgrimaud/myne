@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Myne Backoffice - <?php echo $controller->getControllerName(); ?> - <?php echo $controller->getActionName(); ?></title>
+    <title>Myne Backoffice - <?php echo ucwords($controller->getControllerName()); ?> - <?php echo ucwords($controller->getActionName()); ?></title>
 
     <!-- Bootstrap framework -->
     <link rel="stylesheet" href="/cosmo/css/bootstrap.min.css" />
@@ -35,7 +35,7 @@
               <a class="brand" href="/">Myne Backoffice</a>
               <ul class="nav user_menu pull-right">
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bienvenue <?php print_r($controller->client->infos->name); ?> <b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bienvenue <?php echo ($controller->client->infos->name); ?> <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li><a href="/index/logout">Déconnexion</a></li>
                   </ul>
