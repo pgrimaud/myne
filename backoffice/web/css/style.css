@@ -658,4 +658,4 @@
 
 /* OVERRIDE :^) */
 
-.textcenter{text-align:center !important;}
+.textcenter{text-align:center !important;vertical-align:middle!important;}
