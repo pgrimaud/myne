@@ -25,3 +25,12 @@ if(isset($_POST["searchProduct"]) && $_POST["searchProduct"]) {
         echo json_encode($product->toArray());
     }
 }
+
+if(isset($_POST["addProduct"]) && $_POST["addProduct"]) {
+    $product = new Product();
+    $product->setName($_POST["productName"])
+            ->setEanCode($_POST["productEan"])
+            ->save();
+
+    echo json_encode($product->toArray());
+}

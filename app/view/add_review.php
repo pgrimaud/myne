@@ -3,7 +3,8 @@
     include '../init.php';
 
     $user = UserQuery::create()
-                ->findOneByIdUser(1); // TOFIX
+        // ->findOneByIdFacebook(1); // TOFIX
+        ->findOneByIdUser(1);
 ?>
 <div class="container">
     <div class="row clearfix">
@@ -73,6 +74,7 @@
             <?php else: ?>
                 <input type="hidden" name="userPublication" value="<?php echo $user->getPublication(); ?>" />
             <?php endif; ?>
+            <input type="hidden" id="idUser" value="<?php echo $user->getIdUser(); ?>" />
             <button type="submit" class="btn btn-success disabled">Valider !</button>
         </form>
     </div>
@@ -81,7 +83,7 @@
     <?php
         $oReview = ReviewQuery::create()
             ->filterByIdUser(1)
-            ->orderByDate("ASC")
+            ->orderByDate("DESC")
             ->setLimit(3)
             ->find();
 
@@ -89,17 +91,17 @@
             $nbReview = $oReview->count();
     ?>
         <div class="col-md-12 column">
-            <h3 class="text-center">- Mes 3 derniers avis -</h3>
+        <h3 class="text-center">- <?php echo ($nbReview == 1) ? "Mon dernier avis" : "Mes {$nbReview} derniers avis"; ?> -</h3>
             <div class="row">
             <?php foreach ($oReview as $review) : ?>
                 <div class="col-md-4">
                     <div class="thumbnail">
                         <img alt="300x200" src="http://lorempixel.com/600/200/technics">
                         <div class="caption">
-                            <h3><?php echo $review->getTitle(); ?></h3>
-                            <p><?php echo $review->getContent(); ?></p>
+                            <h3><a href="self_review.php?id_review=<?php echo $review->getIdReview(); ?>" title="Voir l'avis"><?php echo $review->getTitle(); ?></a></h3>
+                            <p><?php echo nl2br($review->getContent()); ?></p>
                             <p>
-                                <a class="btn btn-primary" href="#">Voir l'avis</a>
+                                <a class="btn btn-primary" href="self_review.php?id_review=<?php echo $review->getIdReview(); ?>">Voir l'avis</a>
                                 <a class="btn btn-primary" href="#">Partage</a>
                             </p>
                         </div>
