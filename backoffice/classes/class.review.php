@@ -3,7 +3,7 @@
 Class Review {
 
   public static function get($id_client, $id_product = false, $orderby = false, $start = false, $limit = false) {
-    $query = "SELECT r.*, p.*, c.name_categorie, u.first_name, u.last_name FROM review r"
+    $query = "SELECT r.*, p.*, c.name_categorie, u.first_name, u.last_name, u.id_facebook FROM review r"
             . " LEFT JOIN product p ON p.id_product = r.id_product"
             . " LEFT JOIN customer_product cp ON p.id_product = cp.id_product"
             . " LEFT JOIN categorie c ON c.id_categorie = p.id_categorie"

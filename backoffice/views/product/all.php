@@ -28,7 +28,7 @@
           <?php foreach ($controller->getData()->products as $product): ?>
             <tr>
               <td class="textcenter"><?php echo $product['id_product']; ?></td>
-              <td class="textcenter"><?php echo $product['name']; ?></td>
+              <td class="textcenter"><a href="/product/detail/<?php echo $product['id_product']; ?>"><?php echo $product['name']; ?></a></td>
               <td class="textcenter"><?php echo $product['brand']; ?></td>
               <td class="textcenter">
                 <a href="<?php echo $product['link_image']; ?>" target="blank">

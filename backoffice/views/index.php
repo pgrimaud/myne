@@ -53,7 +53,7 @@
                 Catégorie : <?php echo $review['name_categorie']; ?><br/>
                 Note moyenne : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo (float) round($review['rate'], 2); ?>/5</label><br/>
                 <p>Nombre d'avis : <?php echo $review['nb_review']; ?></p>
-                <a href="/review/show/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-top:20px;margin-right:20px;">Voir les avis de ce produit</label></a>
+                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-top:20px;margin-right:20px;">Voir les avis de ce produit</label></a>
               </div>
             </div>
           <?php endforeach; ?>
@@ -76,7 +76,7 @@
                 Note : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo $review['rate']; ?>/5</label><br/>
                 Titre : <?php echo $review['title']; ?><br/>
                 <p>Contenu : <?php echo $review['content']; ?></p>
-                <a href="/review/show/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-right:20px;">Voir les avis de ce produit</label></a>
+                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-right:20px;">Voir les avis de ce produit</label></a>
               </div>
             </div>
           <?php endforeach; ?>
