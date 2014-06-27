@@ -10,22 +10,22 @@
     </div>
     <div class="row-fluid" style="margin-top:0px;">
       <div class="span3">
-        <div class="alert alert-success textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
+        <div class="alert alert-myne textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
           <?php echo $controller->getData()->kpi['sum_products']; ?> Produits
         </div>
       </div>
       <div class="span3">
-        <div class="alert alert-warning textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
+        <div class="alert alert-myne textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
           <?php echo $controller->getData()->kpi['sum_reviews']; ?> Avis
         </div>
       </div>
       <div class="span3">
-        <div class="alert alert-danger textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
+        <div class="alert alert-myne textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
           <?php echo $controller->getData()->kpi['sum_comments']; ?> Commentaires
         </div>
       </div>
       <div class="span3">
-        <div class="alert alert-info textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
+        <div class="alert alert-myne textcenter" style="font-size:24px;padding-top:30px;padding-bottom:30px;">
           Note moyenne : <?php echo $controller->getData()->kpi['average_rate']; ?>/5
         </div>
       </div>
@@ -53,7 +53,7 @@
                 Catégorie : <?php echo $review['name_categorie']; ?><br/>
                 Note moyenne : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo (float) round($review['rate'], 2); ?>/5</label><br/>
                 <p>Nombre d'avis : <?php echo $review['nb_review']; ?></p>
-                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-top:20px;margin-right:20px;">Voir les avis de ce produit</label></a>
+                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-info" style="float:right;margin-top:20px;margin-right:20px;">Voir les avis de ce produit</label></a>
               </div>
             </div>
           <?php endforeach; ?>
@@ -76,7 +76,7 @@
                 Note : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo $review['rate']; ?>/5</label><br/>
                 Titre : <?php echo $review['title']; ?><br/>
                 <p>Contenu : <?php echo $review['content']; ?></p>
-                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-success" style="float:right;margin-right:20px;">Voir les avis de ce produit</label></a>
+                <a href="/product/detail/<?php echo $review['id_product']; ?>"><label class="badge badge-info" style="float:right;margin-right:20px;">Voir les avis de ce produit</label></a>
               </div>
             </div>
           <?php endforeach; ?>
@@ -112,7 +112,7 @@
         axisAlpha: 50,
         id: "review",
         offset: 50,
-        axisColor: "#ff7518",
+        axisColor: "#058dc7",
         axisThickness: 2,
         "gridAlpha": 0,
       }],
@@ -125,7 +125,7 @@
         bulletBorderColor: "#FFFFFF",
         bulletBorderAlpha: 1,
         lineThickness: 2,
-        lineColor: "#ff7518",
+        lineColor: "#058dc7",
         balloonText: "[[category]]<br><b><span style='font-size:14px;'>Avis: [[value]]</span></b>"
       }],
     chartCursor: {
@@ -159,7 +159,7 @@
         axisAlpha: 50,
         id: "comment",
         offset: 50,
-        axisColor: "#ff0039",
+        axisColor: "#058dc7",
         axisThickness: 2,
         "gridAlpha": 0,
       }],
@@ -172,7 +172,7 @@
         bulletBorderColor: "#FFFFFF",
         bulletBorderAlpha: 1,
         lineThickness: 2,
-        lineColor: "#ff0039",
+        lineColor: "#058dc7",
         balloonText: "[[category]]<br><b><span style='font-size:14px;'>Commentaires: [[value]]</span></b>"
       }],
     chartCursor: {

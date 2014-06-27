@@ -659,3 +659,5 @@
 /* OVERRIDE :^) */
 
 .textcenter{text-align:center !important;vertical-align:middle!important;}
+.alert-myne{background-color:#058dc7;}
+.btn-myne{background-color:#058dc7;color:white;}

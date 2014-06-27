@@ -59,8 +59,8 @@
         <h3 class="heading">Ajouter des produits grâce à un flux de données</h3>
       </div>
     </div>
-    <div class="alert alert-info">
-      Les flux doivent être au format XML, txt ou CSV. <a href="/help/" target="blank">(Plus d'informations)</a>
+    <div class="alert alert-myne">
+      Les flux doivent être au format XML, txt ou CSV. <a style="color:black;" href="/help/" target="blank">(Plus d'informations)</a>
     </div>
     <form method="POST" action="#" onsubmit="return confirm('Avez-vous bien complété tous les champs?');">
       <div class="row-fluid" style="margin-top:0px;">

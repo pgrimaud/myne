@@ -8,8 +8,8 @@
         <h3 class="heading">Vos produits</h3>
       </div>
     </div>
-    <div class="alert alert-warning">
-      Vous pouvez ajouter un nouveau produit <a href='/product/add/'>ici</a>.
+    <div class="alert alert-myne">
+      Vous pouvez ajouter un nouveau produit <a style="color:black;" href='/product/add/'>ici</a>.
     </div>
     <?php if (sizeof($controller->getData()->products) > 0): ?>
       <table class="table">
@@ -39,7 +39,7 @@
               <td class="textcenter"><?php echo $product['ean_code']; ?></td>
               <td class="textcenter">
                 <a href="/product/edit/<?php echo $product['id_product']; ?>">
-                  <input type="button" class="btn btn-warning" value="Editer"/>
+                  <input type="button" class="btn btn-myne" value="Editer"/>
                 </a>
               </td>
             </tr>
