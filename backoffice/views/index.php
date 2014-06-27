@@ -116,6 +116,7 @@
         axisThickness: 2,
         "gridAlpha": 0,
       }],
+    
     graphs: [{
         title: "Avis",
         id: "review",
