@@ -76,8 +76,14 @@ abstract class BaseReviewQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'myne', $modelName = 'Review', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'default';
+        }
+        if (null === $modelName) {
+            $modelName = 'Review';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -94,10 +100,8 @@ abstract class BaseReviewQuery extends ModelCriteria
         if ($criteria instanceof ReviewQuery) {
             return $criteria;
         }
-        $query = new ReviewQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new ReviewQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -126,7 +130,7 @@ abstract class BaseReviewQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = ReviewPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2]))))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -538,7 +542,7 @@ abstract class BaseReviewQuery extends ModelCriteria
      * <code>
      * $query->filterByDate('2011-03-14'); // WHERE date = '2011-03-14'
      * $query->filterByDate('now'); // WHERE date = '2011-03-14'
-     * $query->filterByDate(array('max' => 'yesterday')); // WHERE date > '2011-03-13'
+     * $query->filterByDate(array('max' => 'yesterday')); // WHERE date < '2011-03-13'
      * </code>
      *
      * @param     mixed $date The value to use as filter.

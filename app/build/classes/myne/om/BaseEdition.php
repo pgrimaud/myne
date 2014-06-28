@@ -24,7 +24,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -91,6 +91,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
      */
     public function getIdEdition()
     {
+
         return $this->id_edition;
     }
 
@@ -101,6 +102,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
      */
     public function getIdReview()
     {
+
         return $this->id_review;
     }
 
@@ -111,16 +113,24 @@ abstract class BaseEdition extends BaseObject implements Persistent
      */
     public function getContent()
     {
+
         return $this->content;
     }
 
     /**
      * Get the [mood] column value.
-     * 0: neutral 1: happy 2: content 3: astone 4: fear 5: cry 6: angry
+     * 0: neutral
+1: happy
+2: content
+3: astone
+4: fear
+5: cry
+6: angry
      * @return int
      */
     public function getMood()
     {
+
         return $this->mood;
     }
 
@@ -167,7 +177,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
     /**
      * Set the value of [id_edition] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Edition The current object (for fluent API support)
      */
     public function setIdEdition($v)
@@ -188,7 +198,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
     /**
      * Set the value of [id_review] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Edition The current object (for fluent API support)
      */
     public function setIdReview($v)
@@ -213,12 +223,12 @@ abstract class BaseEdition extends BaseObject implements Persistent
     /**
      * Set the value of [content] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Edition The current object (for fluent API support)
      */
     public function setContent($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -233,8 +243,14 @@ abstract class BaseEdition extends BaseObject implements Persistent
 
     /**
      * Set the value of [mood] column.
-     * 0: neutral 1: happy 2: content 3: astone 4: fear 5: cry 6: angry
-     * @param int $v new value
+     * 0: neutral
+1: happy
+2: content
+3: astone
+4: fear
+5: cry
+6: angry
+     * @param  int $v new value
      * @return Edition The current object (for fluent API support)
      */
     public function setMood($v)
@@ -298,7 +314,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -320,6 +336,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 5; // 5 = EditionPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -500,7 +517,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -669,10 +686,10 @@ abstract class BaseEdition extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -684,7 +701,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -785,6 +802,11 @@ abstract class BaseEdition extends BaseObject implements Persistent
             $keys[3] => $this->getMood(),
             $keys[4] => $this->getDate(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aReview) {
                 $result['Review'] = $this->aReview->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1018,7 +1040,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Review object.
      *
-     * @param             Review $v
+     * @param                  Review $v
      * @return Edition The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1093,7 +1115,7 @@ abstract class BaseEdition extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

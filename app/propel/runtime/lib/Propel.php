@@ -576,6 +576,7 @@ class Propel
      */
     public static function getMasterConnection($name)
     {
+		$name = 'myne'; // CHLAG FIX BUT YOLO
         if (!isset(self::$connectionMap[$name]['master'])) {
             // load connection parameter for master connection
             $conparams = isset(self::$configuration['datasources'][$name]['connection']) ? self::$configuration['datasources'][$name]['connection'] : null;
@@ -757,6 +758,8 @@ class Propel
         if ($name === null) {
             $name = self::getDefaultDB();
         }
+
+		$name = 'myne'; // CHLAG FIX BUT YOLO
 
         if (!isset(self::$adapterMap[$name])) {
             if (!isset(self::$configuration['datasources'][$name]['adapter'])) {

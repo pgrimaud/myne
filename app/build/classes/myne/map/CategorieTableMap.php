@@ -3,7 +3,7 @@
 
 
 /**
- * This class defines the structure of the 'customer' table.
+ * This class defines the structure of the 'categorie' table.
  *
  *
  *
@@ -14,13 +14,13 @@
  *
  * @package    propel.generator.myne.map
  */
-class CustomerTableMap extends TableMap
+class CategorieTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'myne.map.CustomerTableMap';
+    const CLASS_NAME = 'myne.map.CategorieTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -32,17 +32,14 @@ class CustomerTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('customer');
-        $this->setPhpName('Customer');
-        $this->setClassname('Customer');
+        $this->setName('categorie');
+        $this->setPhpName('Categorie');
+        $this->setClassname('Categorie');
         $this->setPackage('myne');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('id_customer', 'IdCustomer', 'INTEGER', true, null, null);
-        $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
-        $this->addColumn('email', 'Email', 'VARCHAR', false, 255, null);
-        $this->addColumn('password', 'Password', 'VARCHAR', false, 32, null);
-        $this->addColumn('api_token', 'ApiToken', 'VARCHAR', false, 32, null);
+        $this->addPrimaryKey('id_categorie', 'IdCategorie', 'INTEGER', true, null, null);
+        $this->addColumn('name_categorie', 'NameCategorie', 'LONGVARCHAR', false, null, null);
         // validators
     } // initialize()
 
@@ -51,7 +48,7 @@ class CustomerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('CustomerProduct', 'CustomerProduct', RelationMap::ONE_TO_MANY, array('id_customer' => 'id_customer', ), 'CASCADE', 'CASCADE', 'CustomerProducts');
+        $this->addRelation('Product', 'Product', RelationMap::ONE_TO_MANY, array('id_categorie' => 'id_categorie', ), 'CASCADE', 'CASCADE', 'Products');
     } // buildRelations()
 
-} // CustomerTableMap
+} // CategorieTableMap

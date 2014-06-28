@@ -1,114 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database defaultIdMethod="native" name="myne">
+<database defaultIdMethod="native" name="default">
   <table name="user">
-    <column name="id_user" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="id_facebook" type="VARCHAR" size="255"/>
-    <column name="first_name" type="VARCHAR" size="255"/>
-    <column name="last_name" type="VARCHAR" size="255"/>
-    <column name="email" type="VARCHAR" size="255"/>
-    <column name="publication" type="TINYINT" required="true" default="0" defaultExpr="0" description="0: let the publication be set by the review publication
-1: only the user can see his reviews
-2: only user's friends can see his reviews
-3: everyone can see his reviews"/>
-    <column name="status" type="TINYINT" required="true" default="1" defaultExpr="1"/>
-    <column name="date" type="TIMESTAMP" required="true"/>
+    <column autoIncrement="true" name="id_user" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_facebook" size="255" type="VARCHAR" />
+    <column name="first_name" size="255" type="VARCHAR" />
+    <column name="last_name" size="255" type="VARCHAR" />
+    <column name="email" size="255" type="VARCHAR" />
+    <column defaultValue="0" description="0: let the publication be set by the review publication&#10;1: only the user can see his reviews&#10;2: only user's friends can see his reviews&#10;3: everyone can see his reviews" name="publication" required="true" type="TINYINT" />
+    <column defaultValue="1" name="status" required="true" type="TINYINT" />
+    <column name="date" required="true" type="TIMESTAMP" />
   </table>
   <table name="review">
-    <column name="id_review" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="id_user" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="id_product" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="title" type="VARCHAR" size="255" required="true"/>
-    <column name="content" type="LONGVARCHAR" required="true"/>
-    <column name="rate" type="SMALLINT" required="true"/>
-    <column name="publication" type="TINYINT" required="true" description="1: only the user can see his reviews
-2: only user's friends can see his reviews
-3: everyone can see his reviews"/>
-    <column name="date" type="TIMESTAMP" required="true"/>
-    <foreign-key name="fk_review_user" foreignTable="user">
-      <reference local="id_user" foreign="id_user"/>
+    <column autoIncrement="true" name="id_review" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_user" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_product" primaryKey="true" required="true" type="INTEGER" />
+    <column name="title" required="true" size="255" type="VARCHAR" />
+    <column name="content" required="true" type="LONGVARCHAR" />
+    <column name="rate" required="true" type="SMALLINT" />
+    <column description="1: only the user can see his reviews&#10;2: only user's friends can see his reviews&#10;3: everyone can see his reviews" name="publication" required="true" type="TINYINT" />
+    <column name="date" required="true" type="TIMESTAMP" />
+    <foreign-key foreignTable="user">
+      <reference foreign="id_user" local="id_user" />
     </foreign-key>
-    <foreign-key name="fk_review_product1" foreignTable="product">
-      <reference local="id_product" foreign="id_product"/>
+    <foreign-key foreignTable="product">
+      <reference foreign="id_product" local="id_product" />
     </foreign-key>
-    <index name="fk_review_user_idx">
-      <index-column name="id_user"/>
-    </index>
-    <index name="fk_review_product1_idx">
-      <index-column name="id_product"/>
-    </index>
   </table>
   <table name="product">
-    <column name="id_product" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="ean_code" type="VARCHAR" size="255"/>
-    <column name="name" type="VARCHAR" size="255"/>
+    <column autoIncrement="true" name="id_product" primaryKey="true" required="true" type="INTEGER" />
+    <column name="ean_code" size="255" type="VARCHAR" />
+    <column name="name" size="255" type="VARCHAR" />
+    <column name="id_categorie" type="INTEGER" />
+    <column name="brand" size="255" type="VARCHAR" />
+    <column name="link_image" type="LONGVARCHAR" />
+    <foreign-key foreignTable="categorie" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference foreign="id_categorie" local="id_categorie" />
+    </foreign-key>
   </table>
   <table name="comment">
-    <column name="id_comment" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="id_review" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="id_user" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="content" type="LONGVARCHAR" required="true"/>
-    <column name="status" type="TINYINT" required="true" default="1" defaultExpr="1"/>
-    <column name="date" type="TIMESTAMP" required="true"/>
-    <foreign-key name="fk_comment_review1" foreignTable="review">
-      <reference local="id_review" foreign="id_review"/>
+    <column autoIncrement="true" name="id_comment" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_review" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_user" primaryKey="true" required="true" type="INTEGER" />
+    <column name="content" required="true" type="LONGVARCHAR" />
+    <column defaultValue="1" name="status" required="true" type="TINYINT" />
+    <column name="date" required="true" type="TIMESTAMP" />
+    <foreign-key foreignTable="review">
+      <reference foreign="id_review" local="id_review" />
     </foreign-key>
-    <foreign-key name="fk_comment_user1" foreignTable="user">
-      <reference local="id_user" foreign="id_user"/>
+    <foreign-key foreignTable="user">
+      <reference foreign="id_user" local="id_user" />
     </foreign-key>
-    <index name="fk_comment_review1_idx">
-      <index-column name="id_review"/>
-    </index>
-    <index name="fk_comment_user1_idx">
-      <index-column name="id_user"/>
-    </index>
   </table>
   <table name="edition">
-    <column name="id_edition" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="id_review" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="content" type="LONGVARCHAR" required="true"/>
-    <column name="mood" type="TINYINT" required="true" description="0: neutral
-1: happy
-2: content
-3: astone
-4: fear
-5: cry
-6: angry"/>
-    <column name="date" type="TIMESTAMP" required="true"/>
-    <foreign-key name="fk_edition_review1" foreignTable="review">
-      <reference local="id_review" foreign="id_review"/>
+    <column autoIncrement="true" name="id_edition" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_review" primaryKey="true" required="true" type="INTEGER" />
+    <column name="content" required="true" type="LONGVARCHAR" />
+    <column description="0: neutral&#10;1: happy&#10;2: content&#10;3: astone&#10;4: fear&#10;5: cry&#10;6: angry" name="mood" required="true" type="TINYINT" />
+    <column name="date" required="true" type="TIMESTAMP" />
+    <foreign-key foreignTable="review">
+      <reference foreign="id_review" local="id_review" />
     </foreign-key>
-    <index name="fk_edition_review1_idx">
-      <index-column name="id_review"/>
-    </index>
   </table>
   <table name="user_has_user">
-    <column name="id_user" type="INTEGER" primaryKey="true" required="true"/>
-    <column name="id_facebook_friend" type="VARCHAR" size="255" required="true"/>
-    <foreign-key name="fk_user_has_user_user1" foreignTable="user">
-      <reference local="id_user" foreign="id_user"/>
+    <column autoIncrement="true" name="id_match" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_user" required="true" type="INTEGER" />
+    <column name="id_facebook_friend" required="true" size="255" type="VARCHAR" />
+    <foreign-key foreignTable="user">
+      <reference foreign="id_user" local="id_user" />
     </foreign-key>
   </table>
   <table name="customer">
-    <column name="id_customer" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="name" type="VARCHAR" size="255"/>
-    <column name="email" type="VARCHAR" size="255"/>
-    <column name="password" type="VARCHAR" size="16"/>
-    <column name="api_token" type="VARCHAR" size="16"/>
-    <unique name="id_cutomer_UNIQUE">
-      <unique-column name="id_customer"/>
-    </unique>
+    <column autoIncrement="true" name="id_customer" primaryKey="true" required="true" type="INTEGER" />
+    <column name="name" size="255" type="VARCHAR" />
+    <column name="email" size="255" type="VARCHAR" />
+    <column name="password" size="32" type="VARCHAR" />
+    <column name="api_token" size="32" type="VARCHAR" />
   </table>
   <table name="customer_product">
-    <column name="id_customer" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
-    <column name="id_product" type="INTEGER"/>
-    <foreign-key name="id_product" foreignTable="product" onDelete="cascade" onUpdate="cascade">
-      <reference local="id_product" foreign="id_product"/>
+    <column name="id_customer" primaryKey="true" required="true" type="INTEGER" />
+    <column name="id_product" primaryKey="true" required="true" type="INTEGER" />
+    <foreign-key foreignTable="product" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference foreign="id_product" local="id_product" />
     </foreign-key>
-    <foreign-key name="id_customer" foreignTable="customer" onDelete="cascade" onUpdate="cascade">
-      <reference local="id_customer" foreign="id_customer"/>
+    <foreign-key foreignTable="customer" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference foreign="id_customer" local="id_customer" />
     </foreign-key>
-    <index name="id_product_idx">
-      <index-column name="id_product"/>
-    </index>
+  </table>
+  <table name="categorie">
+    <column autoIncrement="true" name="id_categorie" primaryKey="true" required="true" type="INTEGER" />
+    <column name="name_categorie" type="LONGVARCHAR" />
   </table>
 </database>

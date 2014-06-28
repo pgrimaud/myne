@@ -24,7 +24,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -60,9 +60,10 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     protected $api_token;
 
     /**
-     * @var        CustomerProduct one-to-one related CustomerProduct object
+     * @var        PropelObjectCollection|CustomerProduct[] Collection to store aggregation of CustomerProduct objects.
      */
-    protected $singleCustomerProduct;
+    protected $collCustomerProducts;
+    protected $collCustomerProductsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -97,6 +98,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function getIdCustomer()
     {
+
         return $this->id_customer;
     }
 
@@ -107,6 +109,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function getName()
     {
+
         return $this->name;
     }
 
@@ -117,6 +120,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function getEmail()
     {
+
         return $this->email;
     }
 
@@ -127,6 +131,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function getPassword()
     {
+
         return $this->password;
     }
 
@@ -137,13 +142,14 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function getApiToken()
     {
+
         return $this->api_token;
     }
 
     /**
      * Set the value of [id_customer] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Customer The current object (for fluent API support)
      */
     public function setIdCustomer($v)
@@ -164,12 +170,12 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     /**
      * Set the value of [name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Customer The current object (for fluent API support)
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -185,12 +191,12 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     /**
      * Set the value of [email] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Customer The current object (for fluent API support)
      */
     public function setEmail($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -206,12 +212,12 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     /**
      * Set the value of [password] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Customer The current object (for fluent API support)
      */
     public function setPassword($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -227,12 +233,12 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     /**
      * Set the value of [api_token] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Customer The current object (for fluent API support)
      */
     public function setApiToken($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -268,7 +274,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -290,6 +296,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 5; // 5 = CustomerPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -352,7 +359,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->singleCustomerProduct = null;
+            $this->collCustomerProducts = null;
 
         } // if (deep)
     }
@@ -487,9 +494,11 @@ abstract class BaseCustomer extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->singleCustomerProduct !== null) {
-                if (!$this->singleCustomerProduct->isDeleted() && ($this->singleCustomerProduct->isNew() || $this->singleCustomerProduct->isModified())) {
-                        $affectedRows += $this->singleCustomerProduct->save($con);
+            if ($this->collCustomerProducts !== null) {
+                foreach ($this->collCustomerProducts as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
                 }
             }
 
@@ -640,10 +649,10 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -659,9 +668,11 @@ abstract class BaseCustomer extends BaseObject implements Persistent
             }
 
 
-                if ($this->singleCustomerProduct !== null) {
-                    if (!$this->singleCustomerProduct->validate($columns)) {
-                        $failureMap = array_merge($failureMap, $this->singleCustomerProduct->getValidationFailures());
+                if ($this->collCustomerProducts !== null) {
+                    foreach ($this->collCustomerProducts as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
                     }
                 }
 
@@ -750,9 +761,14 @@ abstract class BaseCustomer extends BaseObject implements Persistent
             $keys[3] => $this->getPassword(),
             $keys[4] => $this->getApiToken(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
-            if (null !== $this->singleCustomerProduct) {
-                $result['CustomerProduct'] = $this->singleCustomerProduct->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
+            if (null !== $this->collCustomerProducts) {
+                $result['CustomerProducts'] = $this->collCustomerProducts->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -923,9 +939,10 @@ abstract class BaseCustomer extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            $relObj = $this->getCustomerProduct();
-            if ($relObj) {
-                $copyObj->setCustomerProduct($relObj->copy($deepCopy));
+            foreach ($this->getCustomerProducts() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCustomerProduct($relObj->copy($deepCopy));
+                }
             }
 
             //unflag object copy
@@ -989,42 +1006,262 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('CustomerProduct' == $relationName) {
+            $this->initCustomerProducts();
+        }
     }
 
     /**
-     * Gets a single CustomerProduct object, which is related to this object by a one-to-one relationship.
+     * Clears out the collCustomerProducts collection
      *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Customer The current object (for fluent API support)
+     * @see        addCustomerProducts()
+     */
+    public function clearCustomerProducts()
+    {
+        $this->collCustomerProducts = null; // important to set this to null since that means it is uninitialized
+        $this->collCustomerProductsPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collCustomerProducts collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialCustomerProducts($v = true)
+    {
+        $this->collCustomerProductsPartial = $v;
+    }
+
+    /**
+     * Initializes the collCustomerProducts collection.
+     *
+     * By default this just sets the collCustomerProducts collection to an empty array (like clearcollCustomerProducts());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCustomerProducts($overrideExisting = true)
+    {
+        if (null !== $this->collCustomerProducts && !$overrideExisting) {
+            return;
+        }
+        $this->collCustomerProducts = new PropelObjectCollection();
+        $this->collCustomerProducts->setModel('CustomerProduct');
+    }
+
+    /**
+     * Gets an array of CustomerProduct objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Customer is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return CustomerProduct
+     * @return PropelObjectCollection|CustomerProduct[] List of CustomerProduct objects
      * @throws PropelException
      */
-    public function getCustomerProduct(PropelPDO $con = null)
+    public function getCustomerProducts($criteria = null, PropelPDO $con = null)
     {
+        $partial = $this->collCustomerProductsPartial && !$this->isNew();
+        if (null === $this->collCustomerProducts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCustomerProducts) {
+                // return empty collection
+                $this->initCustomerProducts();
+            } else {
+                $collCustomerProducts = CustomerProductQuery::create(null, $criteria)
+                    ->filterByCustomer($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collCustomerProductsPartial && count($collCustomerProducts)) {
+                      $this->initCustomerProducts(false);
 
-        if ($this->singleCustomerProduct === null && !$this->isNew()) {
-            $this->singleCustomerProduct = CustomerProductQuery::create()->findPk($this->getPrimaryKey(), $con);
+                      foreach ($collCustomerProducts as $obj) {
+                        if (false == $this->collCustomerProducts->contains($obj)) {
+                          $this->collCustomerProducts->append($obj);
+                        }
+                      }
+
+                      $this->collCustomerProductsPartial = true;
+                    }
+
+                    $collCustomerProducts->getInternalIterator()->rewind();
+
+                    return $collCustomerProducts;
+                }
+
+                if ($partial && $this->collCustomerProducts) {
+                    foreach ($this->collCustomerProducts as $obj) {
+                        if ($obj->isNew()) {
+                            $collCustomerProducts[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCustomerProducts = $collCustomerProducts;
+                $this->collCustomerProductsPartial = false;
+            }
         }
 
-        return $this->singleCustomerProduct;
+        return $this->collCustomerProducts;
     }
 
     /**
-     * Sets a single CustomerProduct object as related to this object by a one-to-one relationship.
+     * Sets a collection of CustomerProduct objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
      *
-     * @param             CustomerProduct $v CustomerProduct
+     * @param PropelCollection $customerProducts A Propel collection.
+     * @param PropelPDO $con Optional connection object
      * @return Customer The current object (for fluent API support)
+     */
+    public function setCustomerProducts(PropelCollection $customerProducts, PropelPDO $con = null)
+    {
+        $customerProductsToDelete = $this->getCustomerProducts(new Criteria(), $con)->diff($customerProducts);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->customerProductsScheduledForDeletion = clone $customerProductsToDelete;
+
+        foreach ($customerProductsToDelete as $customerProductRemoved) {
+            $customerProductRemoved->setCustomer(null);
+        }
+
+        $this->collCustomerProducts = null;
+        foreach ($customerProducts as $customerProduct) {
+            $this->addCustomerProduct($customerProduct);
+        }
+
+        $this->collCustomerProducts = $customerProducts;
+        $this->collCustomerProductsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related CustomerProduct objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related CustomerProduct objects.
      * @throws PropelException
      */
-    public function setCustomerProduct(CustomerProduct $v = null)
+    public function countCustomerProducts(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $this->singleCustomerProduct = $v;
+        $partial = $this->collCustomerProductsPartial && !$this->isNew();
+        if (null === $this->collCustomerProducts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCustomerProducts) {
+                return 0;
+            }
 
-        // Make sure that that the passed-in CustomerProduct isn't already associated with this object
-        if ($v !== null && $v->getCustomer(null, false) === null) {
-            $v->setCustomer($this);
+            if ($partial && !$criteria) {
+                return count($this->getCustomerProducts());
+            }
+            $query = CustomerProductQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCustomer($this)
+                ->count($con);
+        }
+
+        return count($this->collCustomerProducts);
+    }
+
+    /**
+     * Method called to associate a CustomerProduct object to this object
+     * through the CustomerProduct foreign key attribute.
+     *
+     * @param    CustomerProduct $l CustomerProduct
+     * @return Customer The current object (for fluent API support)
+     */
+    public function addCustomerProduct(CustomerProduct $l)
+    {
+        if ($this->collCustomerProducts === null) {
+            $this->initCustomerProducts();
+            $this->collCustomerProductsPartial = true;
+        }
+
+        if (!in_array($l, $this->collCustomerProducts->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCustomerProduct($l);
+
+            if ($this->customerProductsScheduledForDeletion and $this->customerProductsScheduledForDeletion->contains($l)) {
+                $this->customerProductsScheduledForDeletion->remove($this->customerProductsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
+    }
+
+    /**
+     * @param	CustomerProduct $customerProduct The customerProduct object to add.
+     */
+    protected function doAddCustomerProduct($customerProduct)
+    {
+        $this->collCustomerProducts[]= $customerProduct;
+        $customerProduct->setCustomer($this);
+    }
+
+    /**
+     * @param	CustomerProduct $customerProduct The customerProduct object to remove.
+     * @return Customer The current object (for fluent API support)
+     */
+    public function removeCustomerProduct($customerProduct)
+    {
+        if ($this->getCustomerProducts()->contains($customerProduct)) {
+            $this->collCustomerProducts->remove($this->collCustomerProducts->search($customerProduct));
+            if (null === $this->customerProductsScheduledForDeletion) {
+                $this->customerProductsScheduledForDeletion = clone $this->collCustomerProducts;
+                $this->customerProductsScheduledForDeletion->clear();
+            }
+            $this->customerProductsScheduledForDeletion[]= clone $customerProduct;
+            $customerProduct->setCustomer(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Customer is new, it will return
+     * an empty collection; or if this Customer has previously
+     * been saved, it will retrieve related CustomerProducts from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Customer.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CustomerProduct[] List of CustomerProduct objects
+     */
+    public function getCustomerProductsJoinProduct($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CustomerProductQuery::create(null, $criteria);
+        $query->joinWith('Product', $join_behavior);
+
+        return $this->getCustomerProducts($query, $con);
     }
 
     /**
@@ -1051,7 +1288,7 @@ abstract class BaseCustomer extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -1059,17 +1296,19 @@ abstract class BaseCustomer extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->singleCustomerProduct) {
-                $this->singleCustomerProduct->clearAllReferences($deep);
+            if ($this->collCustomerProducts) {
+                foreach ($this->collCustomerProducts as $o) {
+                    $o->clearAllReferences($deep);
+                }
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        if ($this->singleCustomerProduct instanceof PropelCollection) {
-            $this->singleCustomerProduct->clearIterator();
+        if ($this->collCustomerProducts instanceof PropelCollection) {
+            $this->collCustomerProducts->clearIterator();
         }
-        $this->singleCustomerProduct = null;
+        $this->collCustomerProducts = null;
     }
 
     /**

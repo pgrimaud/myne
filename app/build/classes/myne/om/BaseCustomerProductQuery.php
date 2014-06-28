@@ -27,6 +27,7 @@
  * @method CustomerProduct findOne(PropelPDO $con = null) Return the first CustomerProduct matching the query
  * @method CustomerProduct findOneOrCreate(PropelPDO $con = null) Return the first CustomerProduct matching the query, or a new CustomerProduct object populated from the query conditions when no match is found
  *
+ * @method CustomerProduct findOneByIdCustomer(int $id_customer) Return the first CustomerProduct filtered by the id_customer column
  * @method CustomerProduct findOneByIdProduct(int $id_product) Return the first CustomerProduct filtered by the id_product column
  *
  * @method array findByIdCustomer(int $id_customer) Return CustomerProduct objects filtered by the id_customer column
@@ -43,8 +44,14 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'myne', $modelName = 'CustomerProduct', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'default';
+        }
+        if (null === $modelName) {
+            $modelName = 'CustomerProduct';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -61,10 +68,8 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
         if ($criteria instanceof CustomerProductQuery) {
             return $criteria;
         }
-        $query = new CustomerProductQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new CustomerProductQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -78,10 +83,11 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array $key Primary key to use for the query
+                         A Primary key composition: [$id_customer, $id_product]
      * @param     PropelPDO $con an optional connection object
      *
      * @return   CustomerProduct|CustomerProduct[]|mixed the result, formatted by the current formatter
@@ -91,8 +97,8 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = CustomerProductPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+        if ((null !== ($obj = CustomerProductPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -109,20 +115,6 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
     }
 
     /**
-     * Alias of findPk to use instance pooling
-     *
-     * @param     mixed $key Primary key to use for the query
-     * @param     PropelPDO $con A connection object
-     *
-     * @return                 CustomerProduct A model object, or null if the key is not found
-     * @throws PropelException
-     */
-     public function findOneByIdCustomer($key, $con = null)
-     {
-        return $this->findPk($key, $con);
-     }
-
-    /**
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
@@ -134,10 +126,11 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_customer`, `id_product` FROM `customer_product` WHERE `id_customer` = :p0';
+        $sql = 'SELECT `id_customer`, `id_product` FROM `customer_product` WHERE `id_customer` = :p0 AND `id_product` = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -147,7 +140,7 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
             $obj = new CustomerProduct();
             $obj->hydrate($row);
-            CustomerProductPeer::addInstanceToPool($obj, (string) $key);
+            CustomerProductPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 
@@ -176,7 +169,7 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
@@ -206,8 +199,10 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(CustomerProductPeer::ID_CUSTOMER, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(CustomerProductPeer::ID_PRODUCT, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(CustomerProductPeer::ID_CUSTOMER, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -219,8 +214,17 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(CustomerProductPeer::ID_CUSTOMER, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(CustomerProductPeer::ID_PRODUCT, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(CustomerProductPeer::ID_CUSTOMER, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -345,7 +349,7 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      *
      * @return CustomerProductQuery The current query, for fluid interface
      */
-    public function joinProduct($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Product');
@@ -380,7 +384,7 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
      *
      * @return   ProductQuery A secondary query class using the current class as primary query
      */
-    public function useProductQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinProduct($relationAlias, $joinType)
@@ -473,7 +477,9 @@ abstract class BaseCustomerProductQuery extends ModelCriteria
     public function prune($customerProduct = null)
     {
         if ($customerProduct) {
-            $this->addUsingAlias(CustomerProductPeer::ID_CUSTOMER, $customerProduct->getIdCustomer(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(CustomerProductPeer::ID_CUSTOMER), $customerProduct->getIdCustomer(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(CustomerProductPeer::ID_PRODUCT), $customerProduct->getIdProduct(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

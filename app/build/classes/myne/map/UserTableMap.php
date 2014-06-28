@@ -56,7 +56,7 @@ class UserTableMap extends TableMap
     {
         $this->addRelation('Review', 'Review', RelationMap::ONE_TO_MANY, array('id_user' => 'id_user', ), null, null, 'Reviews');
         $this->addRelation('Comment', 'Comment', RelationMap::ONE_TO_MANY, array('id_user' => 'id_user', ), null, null, 'Comments');
-        $this->addRelation('UserHasUser', 'UserHasUser', RelationMap::ONE_TO_ONE, array('id_user' => 'id_user', ), null, null);
+        $this->addRelation('UserHasUser', 'UserHasUser', RelationMap::ONE_TO_MANY, array('id_user' => 'id_user', ), null, null, 'UserHasUsers');
     } // buildRelations()
 
 } // UserTableMap

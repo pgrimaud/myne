@@ -41,6 +41,9 @@ class ProductTableMap extends TableMap
         $this->addPrimaryKey('id_product', 'IdProduct', 'INTEGER', true, null, null);
         $this->addColumn('ean_code', 'EanCode', 'VARCHAR', false, 255, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
+        $this->addForeignKey('id_categorie', 'IdCategorie', 'INTEGER', 'categorie', 'id_categorie', false, null, null);
+        $this->addColumn('brand', 'Brand', 'VARCHAR', false, 255, null);
+        $this->addColumn('link_image', 'LinkImage', 'LONGVARCHAR', false, null, null);
         // validators
     } // initialize()
 
@@ -49,6 +52,7 @@ class ProductTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Categorie', 'Categorie', RelationMap::MANY_TO_ONE, array('id_categorie' => 'id_categorie', ), 'CASCADE', 'CASCADE');
         $this->addRelation('Review', 'Review', RelationMap::ONE_TO_MANY, array('id_product' => 'id_product', ), null, null, 'Reviews');
         $this->addRelation('CustomerProduct', 'CustomerProduct', RelationMap::ONE_TO_MANY, array('id_product' => 'id_product', ), 'CASCADE', 'CASCADE', 'CustomerProducts');
     } // buildRelations()

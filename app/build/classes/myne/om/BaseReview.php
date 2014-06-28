@@ -24,7 +24,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -138,6 +138,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getIdReview()
     {
+
         return $this->id_review;
     }
 
@@ -148,6 +149,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getIdUser()
     {
+
         return $this->id_user;
     }
 
@@ -158,6 +160,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getIdProduct()
     {
+
         return $this->id_product;
     }
 
@@ -168,6 +171,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getTitle()
     {
+
         return $this->title;
     }
 
@@ -178,6 +182,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getContent()
     {
+
         return $this->content;
     }
 
@@ -188,16 +193,20 @@ abstract class BaseReview extends BaseObject implements Persistent
      */
     public function getRate()
     {
+
         return $this->rate;
     }
 
     /**
      * Get the [publication] column value.
-     * 1: only the user can see his reviews 2: only user's friends can see his reviews 3: everyone can see his reviews
+     * 1: only the user can see his reviews
+2: only user's friends can see his reviews
+3: everyone can see his reviews
      * @return int
      */
     public function getPublication()
     {
+
         return $this->publication;
     }
 
@@ -244,7 +253,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [id_review] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setIdReview($v)
@@ -265,7 +274,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [id_user] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setIdUser($v)
@@ -290,7 +299,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [id_product] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setIdProduct($v)
@@ -315,12 +324,12 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [title] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setTitle($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -336,12 +345,12 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [content] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setContent($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -357,7 +366,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Set the value of [rate] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setRate($v)
@@ -377,8 +386,10 @@ abstract class BaseReview extends BaseObject implements Persistent
 
     /**
      * Set the value of [publication] column.
-     * 1: only the user can see his reviews 2: only user's friends can see his reviews 3: everyone can see his reviews
-     * @param int $v new value
+     * 1: only the user can see his reviews
+2: only user's friends can see his reviews
+3: everyone can see his reviews
+     * @param  int $v new value
      * @return Review The current object (for fluent API support)
      */
     public function setPublication($v)
@@ -442,7 +453,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -467,6 +478,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 8; // 8 = ReviewPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -655,7 +667,7 @@ abstract class BaseReview extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -883,10 +895,10 @@ abstract class BaseReview extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -898,7 +910,7 @@ abstract class BaseReview extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -1033,6 +1045,11 @@ abstract class BaseReview extends BaseObject implements Persistent
             $keys[6] => $this->getPublication(),
             $keys[7] => $this->getDate(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aUser) {
                 $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1308,7 +1325,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return Review The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1360,7 +1377,7 @@ abstract class BaseReview extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Product object.
      *
-     * @param             Product $v
+     * @param                  Product $v
      * @return Review The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1505,7 +1522,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                     if (false !== $this->collCommentsPartial && count($collComments)) {
                       $this->initComments(false);
 
-                      foreach($collComments as $obj) {
+                      foreach ($collComments as $obj) {
                         if (false == $this->collComments->contains($obj)) {
                           $this->collComments->append($obj);
                         }
@@ -1515,12 +1532,13 @@ abstract class BaseReview extends BaseObject implements Persistent
                     }
 
                     $collComments->getInternalIterator()->rewind();
+
                     return $collComments;
                 }
 
-                if($partial && $this->collComments) {
-                    foreach($this->collComments as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collComments) {
+                    foreach ($this->collComments as $obj) {
+                        if ($obj->isNew()) {
                             $collComments[] = $obj;
                         }
                     }
@@ -1548,7 +1566,11 @@ abstract class BaseReview extends BaseObject implements Persistent
     {
         $commentsToDelete = $this->getComments(new Criteria(), $con)->diff($comments);
 
-        $this->commentsScheduledForDeletion = unserialize(serialize($commentsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->commentsScheduledForDeletion = clone $commentsToDelete;
 
         foreach ($commentsToDelete as $commentRemoved) {
             $commentRemoved->setReview(null);
@@ -1582,7 +1604,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getComments());
             }
             $query = CommentQuery::create(null, $criteria);
@@ -1611,8 +1633,13 @@ abstract class BaseReview extends BaseObject implements Persistent
             $this->initComments();
             $this->collCommentsPartial = true;
         }
+
         if (!in_array($l, $this->collComments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddComment($l);
+
+            if ($this->commentsScheduledForDeletion and $this->commentsScheduledForDeletion->contains($l)) {
+                $this->commentsScheduledForDeletion->remove($this->commentsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1748,7 +1775,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                     if (false !== $this->collEditionsPartial && count($collEditions)) {
                       $this->initEditions(false);
 
-                      foreach($collEditions as $obj) {
+                      foreach ($collEditions as $obj) {
                         if (false == $this->collEditions->contains($obj)) {
                           $this->collEditions->append($obj);
                         }
@@ -1758,12 +1785,13 @@ abstract class BaseReview extends BaseObject implements Persistent
                     }
 
                     $collEditions->getInternalIterator()->rewind();
+
                     return $collEditions;
                 }
 
-                if($partial && $this->collEditions) {
-                    foreach($this->collEditions as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collEditions) {
+                    foreach ($this->collEditions as $obj) {
+                        if ($obj->isNew()) {
                             $collEditions[] = $obj;
                         }
                     }
@@ -1791,7 +1819,11 @@ abstract class BaseReview extends BaseObject implements Persistent
     {
         $editionsToDelete = $this->getEditions(new Criteria(), $con)->diff($editions);
 
-        $this->editionsScheduledForDeletion = unserialize(serialize($editionsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->editionsScheduledForDeletion = clone $editionsToDelete;
 
         foreach ($editionsToDelete as $editionRemoved) {
             $editionRemoved->setReview(null);
@@ -1825,7 +1857,7 @@ abstract class BaseReview extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getEditions());
             }
             $query = EditionQuery::create(null, $criteria);
@@ -1854,8 +1886,13 @@ abstract class BaseReview extends BaseObject implements Persistent
             $this->initEditions();
             $this->collEditionsPartial = true;
         }
+
         if (!in_array($l, $this->collEditions->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddEdition($l);
+
+            if ($this->editionsScheduledForDeletion and $this->editionsScheduledForDeletion->contains($l)) {
+                $this->editionsScheduledForDeletion->remove($this->editionsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1916,7 +1953,7 @@ abstract class BaseReview extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

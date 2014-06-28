@@ -24,7 +24,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -92,9 +92,10 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $collCommentsPartial;
 
     /**
-     * @var        UserHasUser one-to-one related UserHasUser object
+     * @var        PropelObjectCollection|UserHasUser[] Collection to store aggregation of UserHasUser objects.
      */
-    protected $singleUserHasUser;
+    protected $collUserHasUsers;
+    protected $collUserHasUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -163,6 +164,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getIdUser()
     {
+
         return $this->id_user;
     }
 
@@ -173,6 +175,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getIdFacebook()
     {
+
         return $this->id_facebook;
     }
 
@@ -183,6 +186,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getFirstName()
     {
+
         return $this->first_name;
     }
 
@@ -193,6 +197,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getLastName()
     {
+
         return $this->last_name;
     }
 
@@ -203,16 +208,21 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getEmail()
     {
+
         return $this->email;
     }
 
     /**
      * Get the [publication] column value.
-     * 0: let the publication be set by the review publication 1: only the user can see his reviews 2: only user's friends can see his reviews 3: everyone can see his reviews
+     * 0: let the publication be set by the review publication
+1: only the user can see his reviews
+2: only user's friends can see his reviews
+3: everyone can see his reviews
      * @return int
      */
     public function getPublication()
     {
+
         return $this->publication;
     }
 
@@ -223,6 +233,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function getStatus()
     {
+
         return $this->status;
     }
 
@@ -269,7 +280,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [id_user] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return User The current object (for fluent API support)
      */
     public function setIdUser($v)
@@ -290,12 +301,12 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [id_facebook] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return User The current object (for fluent API support)
      */
     public function setIdFacebook($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -311,12 +322,12 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [first_name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return User The current object (for fluent API support)
      */
     public function setFirstName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -332,12 +343,12 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [last_name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return User The current object (for fluent API support)
      */
     public function setLastName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -353,12 +364,12 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [email] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return User The current object (for fluent API support)
      */
     public function setEmail($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -373,8 +384,11 @@ abstract class BaseUser extends BaseObject implements Persistent
 
     /**
      * Set the value of [publication] column.
-     * 0: let the publication be set by the review publication 1: only the user can see his reviews 2: only user's friends can see his reviews 3: everyone can see his reviews
-     * @param int $v new value
+     * 0: let the publication be set by the review publication
+1: only the user can see his reviews
+2: only user's friends can see his reviews
+3: everyone can see his reviews
+     * @param  int $v new value
      * @return User The current object (for fluent API support)
      */
     public function setPublication($v)
@@ -395,7 +409,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     /**
      * Set the value of [status] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return User The current object (for fluent API support)
      */
     public function setStatus($v)
@@ -467,7 +481,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -492,6 +506,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 8; // 8 = UserPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -558,7 +573,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             $this->collComments = null;
 
-            $this->singleUserHasUser = null;
+            $this->collUserHasUsers = null;
 
         } // if (deep)
     }
@@ -727,9 +742,11 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->singleUserHasUser !== null) {
-                if (!$this->singleUserHasUser->isDeleted() && ($this->singleUserHasUser->isNew() || $this->singleUserHasUser->isModified())) {
-                        $affectedRows += $this->singleUserHasUser->save($con);
+            if ($this->collUserHasUsers !== null) {
+                foreach ($this->collUserHasUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
                 }
             }
 
@@ -898,10 +915,10 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -933,9 +950,11 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
                 }
 
-                if ($this->singleUserHasUser !== null) {
-                    if (!$this->singleUserHasUser->validate($columns)) {
-                        $failureMap = array_merge($failureMap, $this->singleUserHasUser->getValidationFailures());
+                if ($this->collUserHasUsers !== null) {
+                    foreach ($this->collUserHasUsers as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
                     }
                 }
 
@@ -1036,6 +1055,11 @@ abstract class BaseUser extends BaseObject implements Persistent
             $keys[6] => $this->getStatus(),
             $keys[7] => $this->getDate(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->collReviews) {
                 $result['Reviews'] = $this->collReviews->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1043,8 +1067,8 @@ abstract class BaseUser extends BaseObject implements Persistent
             if (null !== $this->collComments) {
                 $result['Comments'] = $this->collComments->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->singleUserHasUser) {
-                $result['UserHasUser'] = $this->singleUserHasUser->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
+            if (null !== $this->collUserHasUsers) {
+                $result['UserHasUsers'] = $this->collUserHasUsers->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1245,9 +1269,10 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
             }
 
-            $relObj = $this->getUserHasUser();
-            if ($relObj) {
-                $copyObj->setUserHasUser($relObj->copy($deepCopy));
+            foreach ($this->getUserHasUsers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUserHasUser($relObj->copy($deepCopy));
+                }
             }
 
             //unflag object copy
@@ -1316,6 +1341,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         }
         if ('Comment' == $relationName) {
             $this->initComments();
+        }
+        if ('UserHasUser' == $relationName) {
+            $this->initUserHasUsers();
         }
     }
 
@@ -1396,7 +1424,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                     if (false !== $this->collReviewsPartial && count($collReviews)) {
                       $this->initReviews(false);
 
-                      foreach($collReviews as $obj) {
+                      foreach ($collReviews as $obj) {
                         if (false == $this->collReviews->contains($obj)) {
                           $this->collReviews->append($obj);
                         }
@@ -1406,12 +1434,13 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
 
                     $collReviews->getInternalIterator()->rewind();
+
                     return $collReviews;
                 }
 
-                if($partial && $this->collReviews) {
-                    foreach($this->collReviews as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collReviews) {
+                    foreach ($this->collReviews as $obj) {
+                        if ($obj->isNew()) {
                             $collReviews[] = $obj;
                         }
                     }
@@ -1439,7 +1468,11 @@ abstract class BaseUser extends BaseObject implements Persistent
     {
         $reviewsToDelete = $this->getReviews(new Criteria(), $con)->diff($reviews);
 
-        $this->reviewsScheduledForDeletion = unserialize(serialize($reviewsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->reviewsScheduledForDeletion = clone $reviewsToDelete;
 
         foreach ($reviewsToDelete as $reviewRemoved) {
             $reviewRemoved->setUser(null);
@@ -1473,7 +1506,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getReviews());
             }
             $query = ReviewQuery::create(null, $criteria);
@@ -1502,8 +1535,13 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initReviews();
             $this->collReviewsPartial = true;
         }
+
         if (!in_array($l, $this->collReviews->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddReview($l);
+
+            if ($this->reviewsScheduledForDeletion and $this->reviewsScheduledForDeletion->contains($l)) {
+                $this->reviewsScheduledForDeletion->remove($this->reviewsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1639,7 +1677,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                     if (false !== $this->collCommentsPartial && count($collComments)) {
                       $this->initComments(false);
 
-                      foreach($collComments as $obj) {
+                      foreach ($collComments as $obj) {
                         if (false == $this->collComments->contains($obj)) {
                           $this->collComments->append($obj);
                         }
@@ -1649,12 +1687,13 @@ abstract class BaseUser extends BaseObject implements Persistent
                     }
 
                     $collComments->getInternalIterator()->rewind();
+
                     return $collComments;
                 }
 
-                if($partial && $this->collComments) {
-                    foreach($this->collComments as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collComments) {
+                    foreach ($this->collComments as $obj) {
+                        if ($obj->isNew()) {
                             $collComments[] = $obj;
                         }
                     }
@@ -1682,7 +1721,11 @@ abstract class BaseUser extends BaseObject implements Persistent
     {
         $commentsToDelete = $this->getComments(new Criteria(), $con)->diff($comments);
 
-        $this->commentsScheduledForDeletion = unserialize(serialize($commentsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->commentsScheduledForDeletion = clone $commentsToDelete;
 
         foreach ($commentsToDelete as $commentRemoved) {
             $commentRemoved->setUser(null);
@@ -1716,7 +1759,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getComments());
             }
             $query = CommentQuery::create(null, $criteria);
@@ -1745,8 +1788,13 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->initComments();
             $this->collCommentsPartial = true;
         }
+
         if (!in_array($l, $this->collComments->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddComment($l);
+
+            if ($this->commentsScheduledForDeletion and $this->commentsScheduledForDeletion->contains($l)) {
+                $this->commentsScheduledForDeletion->remove($this->commentsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1806,36 +1854,225 @@ abstract class BaseUser extends BaseObject implements Persistent
     }
 
     /**
-     * Gets a single UserHasUser object, which is related to this object by a one-to-one relationship.
+     * Clears out the collUserHasUsers collection
      *
-     * @param PropelPDO $con optional connection object
-     * @return UserHasUser
-     * @throws PropelException
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return User The current object (for fluent API support)
+     * @see        addUserHasUsers()
      */
-    public function getUserHasUser(PropelPDO $con = null)
+    public function clearUserHasUsers()
     {
+        $this->collUserHasUsers = null; // important to set this to null since that means it is uninitialized
+        $this->collUserHasUsersPartial = null;
 
-        if ($this->singleUserHasUser === null && !$this->isNew()) {
-            $this->singleUserHasUser = UserHasUserQuery::create()->findPk($this->getPrimaryKey(), $con);
-        }
-
-        return $this->singleUserHasUser;
+        return $this;
     }
 
     /**
-     * Sets a single UserHasUser object as related to this object by a one-to-one relationship.
+     * reset is the collUserHasUsers collection loaded partially
      *
-     * @param             UserHasUser $v UserHasUser
-     * @return User The current object (for fluent API support)
+     * @return void
+     */
+    public function resetPartialUserHasUsers($v = true)
+    {
+        $this->collUserHasUsersPartial = $v;
+    }
+
+    /**
+     * Initializes the collUserHasUsers collection.
+     *
+     * By default this just sets the collUserHasUsers collection to an empty array (like clearcollUserHasUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUserHasUsers($overrideExisting = true)
+    {
+        if (null !== $this->collUserHasUsers && !$overrideExisting) {
+            return;
+        }
+        $this->collUserHasUsers = new PropelObjectCollection();
+        $this->collUserHasUsers->setModel('UserHasUser');
+    }
+
+    /**
+     * Gets an array of UserHasUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|UserHasUser[] List of UserHasUser objects
      * @throws PropelException
      */
-    public function setUserHasUser(UserHasUser $v = null)
+    public function getUserHasUsers($criteria = null, PropelPDO $con = null)
     {
-        $this->singleUserHasUser = $v;
+        $partial = $this->collUserHasUsersPartial && !$this->isNew();
+        if (null === $this->collUserHasUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUserHasUsers) {
+                // return empty collection
+                $this->initUserHasUsers();
+            } else {
+                $collUserHasUsers = UserHasUserQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collUserHasUsersPartial && count($collUserHasUsers)) {
+                      $this->initUserHasUsers(false);
 
-        // Make sure that that the passed-in UserHasUser isn't already associated with this object
-        if ($v !== null && $v->getUser(null, false) === null) {
-            $v->setUser($this);
+                      foreach ($collUserHasUsers as $obj) {
+                        if (false == $this->collUserHasUsers->contains($obj)) {
+                          $this->collUserHasUsers->append($obj);
+                        }
+                      }
+
+                      $this->collUserHasUsersPartial = true;
+                    }
+
+                    $collUserHasUsers->getInternalIterator()->rewind();
+
+                    return $collUserHasUsers;
+                }
+
+                if ($partial && $this->collUserHasUsers) {
+                    foreach ($this->collUserHasUsers as $obj) {
+                        if ($obj->isNew()) {
+                            $collUserHasUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUserHasUsers = $collUserHasUsers;
+                $this->collUserHasUsersPartial = false;
+            }
+        }
+
+        return $this->collUserHasUsers;
+    }
+
+    /**
+     * Sets a collection of UserHasUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $userHasUsers A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return User The current object (for fluent API support)
+     */
+    public function setUserHasUsers(PropelCollection $userHasUsers, PropelPDO $con = null)
+    {
+        $userHasUsersToDelete = $this->getUserHasUsers(new Criteria(), $con)->diff($userHasUsers);
+
+
+        $this->userHasUsersScheduledForDeletion = $userHasUsersToDelete;
+
+        foreach ($userHasUsersToDelete as $userHasUserRemoved) {
+            $userHasUserRemoved->setUser(null);
+        }
+
+        $this->collUserHasUsers = null;
+        foreach ($userHasUsers as $userHasUser) {
+            $this->addUserHasUser($userHasUser);
+        }
+
+        $this->collUserHasUsers = $userHasUsers;
+        $this->collUserHasUsersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related UserHasUser objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related UserHasUser objects.
+     * @throws PropelException
+     */
+    public function countUserHasUsers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collUserHasUsersPartial && !$this->isNew();
+        if (null === $this->collUserHasUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUserHasUsers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getUserHasUsers());
+            }
+            $query = UserHasUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collUserHasUsers);
+    }
+
+    /**
+     * Method called to associate a UserHasUser object to this object
+     * through the UserHasUser foreign key attribute.
+     *
+     * @param    UserHasUser $l UserHasUser
+     * @return User The current object (for fluent API support)
+     */
+    public function addUserHasUser(UserHasUser $l)
+    {
+        if ($this->collUserHasUsers === null) {
+            $this->initUserHasUsers();
+            $this->collUserHasUsersPartial = true;
+        }
+
+        if (!in_array($l, $this->collUserHasUsers->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddUserHasUser($l);
+
+            if ($this->userHasUsersScheduledForDeletion and $this->userHasUsersScheduledForDeletion->contains($l)) {
+                $this->userHasUsersScheduledForDeletion->remove($this->userHasUsersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	UserHasUser $userHasUser The userHasUser object to add.
+     */
+    protected function doAddUserHasUser($userHasUser)
+    {
+        $this->collUserHasUsers[]= $userHasUser;
+        $userHasUser->setUser($this);
+    }
+
+    /**
+     * @param	UserHasUser $userHasUser The userHasUser object to remove.
+     * @return User The current object (for fluent API support)
+     */
+    public function removeUserHasUser($userHasUser)
+    {
+        if ($this->getUserHasUsers()->contains($userHasUser)) {
+            $this->collUserHasUsers->remove($this->collUserHasUsers->search($userHasUser));
+            if (null === $this->userHasUsersScheduledForDeletion) {
+                $this->userHasUsersScheduledForDeletion = clone $this->collUserHasUsers;
+                $this->userHasUsersScheduledForDeletion->clear();
+            }
+            $this->userHasUsersScheduledForDeletion[]= clone $userHasUser;
+            $userHasUser->setUser(null);
         }
 
         return $this;
@@ -1869,7 +2106,7 @@ abstract class BaseUser extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -1887,8 +2124,10 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->singleUserHasUser) {
-                $this->singleUserHasUser->clearAllReferences($deep);
+            if ($this->collUserHasUsers) {
+                foreach ($this->collUserHasUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
@@ -1902,10 +2141,10 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->collComments->clearIterator();
         }
         $this->collComments = null;
-        if ($this->singleUserHasUser instanceof PropelCollection) {
-            $this->singleUserHasUser->clearIterator();
+        if ($this->collUserHasUsers instanceof PropelCollection) {
+            $this->collUserHasUsers->clearIterator();
         }
-        $this->singleUserHasUser = null;
+        $this->collUserHasUsers = null;
     }
 
     /**

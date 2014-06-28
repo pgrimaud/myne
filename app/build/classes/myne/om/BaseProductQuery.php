@@ -9,14 +9,24 @@
  * @method ProductQuery orderByIdProduct($order = Criteria::ASC) Order by the id_product column
  * @method ProductQuery orderByEanCode($order = Criteria::ASC) Order by the ean_code column
  * @method ProductQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method ProductQuery orderByIdCategorie($order = Criteria::ASC) Order by the id_categorie column
+ * @method ProductQuery orderByBrand($order = Criteria::ASC) Order by the brand column
+ * @method ProductQuery orderByLinkImage($order = Criteria::ASC) Order by the link_image column
  *
  * @method ProductQuery groupByIdProduct() Group by the id_product column
  * @method ProductQuery groupByEanCode() Group by the ean_code column
  * @method ProductQuery groupByName() Group by the name column
+ * @method ProductQuery groupByIdCategorie() Group by the id_categorie column
+ * @method ProductQuery groupByBrand() Group by the brand column
+ * @method ProductQuery groupByLinkImage() Group by the link_image column
  *
  * @method ProductQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method ProductQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method ProductQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method ProductQuery leftJoinCategorie($relationAlias = null) Adds a LEFT JOIN clause to the query using the Categorie relation
+ * @method ProductQuery rightJoinCategorie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Categorie relation
+ * @method ProductQuery innerJoinCategorie($relationAlias = null) Adds a INNER JOIN clause to the query using the Categorie relation
  *
  * @method ProductQuery leftJoinReview($relationAlias = null) Adds a LEFT JOIN clause to the query using the Review relation
  * @method ProductQuery rightJoinReview($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Review relation
@@ -31,10 +41,16 @@
  *
  * @method Product findOneByEanCode(string $ean_code) Return the first Product filtered by the ean_code column
  * @method Product findOneByName(string $name) Return the first Product filtered by the name column
+ * @method Product findOneByIdCategorie(int $id_categorie) Return the first Product filtered by the id_categorie column
+ * @method Product findOneByBrand(string $brand) Return the first Product filtered by the brand column
+ * @method Product findOneByLinkImage(string $link_image) Return the first Product filtered by the link_image column
  *
  * @method array findByIdProduct(int $id_product) Return Product objects filtered by the id_product column
  * @method array findByEanCode(string $ean_code) Return Product objects filtered by the ean_code column
  * @method array findByName(string $name) Return Product objects filtered by the name column
+ * @method array findByIdCategorie(int $id_categorie) Return Product objects filtered by the id_categorie column
+ * @method array findByBrand(string $brand) Return Product objects filtered by the brand column
+ * @method array findByLinkImage(string $link_image) Return Product objects filtered by the link_image column
  *
  * @package    propel.generator.myne.om
  */
@@ -47,8 +63,14 @@ abstract class BaseProductQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'myne', $modelName = 'Product', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'default';
+        }
+        if (null === $modelName) {
+            $modelName = 'Product';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -65,10 +87,8 @@ abstract class BaseProductQuery extends ModelCriteria
         if ($criteria instanceof ProductQuery) {
             return $criteria;
         }
-        $query = new ProductQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new ProductQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -96,7 +116,7 @@ abstract class BaseProductQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = ProductPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -138,7 +158,7 @@ abstract class BaseProductQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_product`, `ean_code`, `name` FROM `product` WHERE `id_product` = :p0';
+        $sql = 'SELECT `id_product`, `ean_code`, `name`, `id_categorie`, `brand`, `link_image` FROM `product` WHERE `id_product` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -328,6 +348,184 @@ abstract class BaseProductQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the id_categorie column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdCategorie(1234); // WHERE id_categorie = 1234
+     * $query->filterByIdCategorie(array(12, 34)); // WHERE id_categorie IN (12, 34)
+     * $query->filterByIdCategorie(array('min' => 12)); // WHERE id_categorie >= 12
+     * $query->filterByIdCategorie(array('max' => 12)); // WHERE id_categorie <= 12
+     * </code>
+     *
+     * @see       filterByCategorie()
+     *
+     * @param     mixed $idCategorie The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ProductQuery The current query, for fluid interface
+     */
+    public function filterByIdCategorie($idCategorie = null, $comparison = null)
+    {
+        if (is_array($idCategorie)) {
+            $useMinMax = false;
+            if (isset($idCategorie['min'])) {
+                $this->addUsingAlias(ProductPeer::ID_CATEGORIE, $idCategorie['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idCategorie['max'])) {
+                $this->addUsingAlias(ProductPeer::ID_CATEGORIE, $idCategorie['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ProductPeer::ID_CATEGORIE, $idCategorie, $comparison);
+    }
+
+    /**
+     * Filter the query on the brand column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByBrand('fooValue');   // WHERE brand = 'fooValue'
+     * $query->filterByBrand('%fooValue%'); // WHERE brand LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $brand The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ProductQuery The current query, for fluid interface
+     */
+    public function filterByBrand($brand = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($brand)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $brand)) {
+                $brand = str_replace('*', '%', $brand);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ProductPeer::BRAND, $brand, $comparison);
+    }
+
+    /**
+     * Filter the query on the link_image column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLinkImage('fooValue');   // WHERE link_image = 'fooValue'
+     * $query->filterByLinkImage('%fooValue%'); // WHERE link_image LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $linkImage The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ProductQuery The current query, for fluid interface
+     */
+    public function filterByLinkImage($linkImage = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($linkImage)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $linkImage)) {
+                $linkImage = str_replace('*', '%', $linkImage);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ProductPeer::LINK_IMAGE, $linkImage, $comparison);
+    }
+
+    /**
+     * Filter the query by a related Categorie object
+     *
+     * @param   Categorie|PropelObjectCollection $categorie The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ProductQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCategorie($categorie, $comparison = null)
+    {
+        if ($categorie instanceof Categorie) {
+            return $this
+                ->addUsingAlias(ProductPeer::ID_CATEGORIE, $categorie->getIdCategorie(), $comparison);
+        } elseif ($categorie instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ProductPeer::ID_CATEGORIE, $categorie->toKeyValue('PrimaryKey', 'IdCategorie'), $comparison);
+        } else {
+            throw new PropelException('filterByCategorie() only accepts arguments of type Categorie or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Categorie relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ProductQuery The current query, for fluid interface
+     */
+    public function joinCategorie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Categorie');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Categorie');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Categorie relation Categorie object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   CategorieQuery A secondary query class using the current class as primary query
+     */
+    public function useCategorieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCategorie($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Categorie', 'CategorieQuery');
+    }
+
+    /**
      * Filter the query by a related Review object
      *
      * @param   Review|PropelObjectCollection $review  the related object to use as filter
@@ -433,7 +631,7 @@ abstract class BaseProductQuery extends ModelCriteria
      *
      * @return ProductQuery The current query, for fluid interface
      */
-    public function joinCustomerProduct($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinCustomerProduct($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('CustomerProduct');
@@ -468,7 +666,7 @@ abstract class BaseProductQuery extends ModelCriteria
      *
      * @return   CustomerProductQuery A secondary query class using the current class as primary query
      */
-    public function useCustomerProductQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useCustomerProductQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinCustomerProduct($relationAlias, $joinType)

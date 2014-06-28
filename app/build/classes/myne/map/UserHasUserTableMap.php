@@ -36,9 +36,10 @@ class UserHasUserTableMap extends TableMap
         $this->setPhpName('UserHasUser');
         $this->setClassname('UserHasUser');
         $this->setPackage('myne');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
-        $this->addForeignPrimaryKey('id_user', 'IdUser', 'INTEGER' , 'user', 'id_user', true, null, null);
+        $this->addPrimaryKey('id_match', 'IdMatch', 'INTEGER', true, null, null);
+        $this->addForeignKey('id_user', 'IdUser', 'INTEGER', 'user', 'id_user', true, null, null);
         $this->addColumn('id_facebook_friend', 'IdFacebookFriend', 'VARCHAR', true, 255, null);
         // validators
     } // initialize()

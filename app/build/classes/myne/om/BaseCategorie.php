@@ -2,24 +2,24 @@
 
 
 /**
- * Base class that represents a row from the 'user_has_user' table.
+ * Base class that represents a row from the 'categorie' table.
  *
  *
  *
  * @package    propel.generator.myne.om
  */
-abstract class BaseUserHasUser extends BaseObject implements Persistent
+abstract class BaseCategorie extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'UserHasUserPeer';
+    const PEER = 'CategoriePeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        UserHasUserPeer
+     * @var        CategoriePeer
      */
     protected static $peer;
 
@@ -30,27 +30,22 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the id_match field.
+     * The value for the id_categorie field.
      * @var        int
      */
-    protected $id_match;
+    protected $id_categorie;
 
     /**
-     * The value for the id_user field.
-     * @var        int
-     */
-    protected $id_user;
-
-    /**
-     * The value for the id_facebook_friend field.
+     * The value for the name_categorie field.
      * @var        string
      */
-    protected $id_facebook_friend;
+    protected $name_categorie;
 
     /**
-     * @var        User
+     * @var        PropelObjectCollection|Product[] Collection to store aggregation of Product objects.
      */
-    protected $aUser;
+    protected $collProducts;
+    protected $collProductsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -73,104 +68,74 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     protected $alreadyInClearAllReferencesDeep = false;
 
     /**
-     * Get the [id_match] column value.
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $productsScheduledForDeletion = null;
+
+    /**
+     * Get the [id_categorie] column value.
      *
      * @return int
      */
-    public function getIdMatch()
+    public function getIdCategorie()
     {
 
-        return $this->id_match;
+        return $this->id_categorie;
     }
 
     /**
-     * Get the [id_user] column value.
-     *
-     * @return int
-     */
-    public function getIdUser()
-    {
-
-        return $this->id_user;
-    }
-
-    /**
-     * Get the [id_facebook_friend] column value.
+     * Get the [name_categorie] column value.
      *
      * @return string
      */
-    public function getIdFacebookFriend()
+    public function getNameCategorie()
     {
 
-        return $this->id_facebook_friend;
+        return $this->name_categorie;
     }
 
     /**
-     * Set the value of [id_match] column.
+     * Set the value of [id_categorie] column.
      *
      * @param  int $v new value
-     * @return UserHasUser The current object (for fluent API support)
+     * @return Categorie The current object (for fluent API support)
      */
-    public function setIdMatch($v)
+    public function setIdCategorie($v)
     {
         if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
-        if ($this->id_match !== $v) {
-            $this->id_match = $v;
-            $this->modifiedColumns[] = UserHasUserPeer::ID_MATCH;
+        if ($this->id_categorie !== $v) {
+            $this->id_categorie = $v;
+            $this->modifiedColumns[] = CategoriePeer::ID_CATEGORIE;
         }
 
 
         return $this;
-    } // setIdMatch()
+    } // setIdCategorie()
 
     /**
-     * Set the value of [id_user] column.
-     *
-     * @param  int $v new value
-     * @return UserHasUser The current object (for fluent API support)
-     */
-    public function setIdUser($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->id_user !== $v) {
-            $this->id_user = $v;
-            $this->modifiedColumns[] = UserHasUserPeer::ID_USER;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getIdUser() !== $v) {
-            $this->aUser = null;
-        }
-
-
-        return $this;
-    } // setIdUser()
-
-    /**
-     * Set the value of [id_facebook_friend] column.
+     * Set the value of [name_categorie] column.
      *
      * @param  string $v new value
-     * @return UserHasUser The current object (for fluent API support)
+     * @return Categorie The current object (for fluent API support)
      */
-    public function setIdFacebookFriend($v)
+    public function setNameCategorie($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->id_facebook_friend !== $v) {
-            $this->id_facebook_friend = $v;
-            $this->modifiedColumns[] = UserHasUserPeer::ID_FACEBOOK_FRIEND;
+        if ($this->name_categorie !== $v) {
+            $this->name_categorie = $v;
+            $this->modifiedColumns[] = CategoriePeer::NAME_CATEGORIE;
         }
 
 
         return $this;
-    } // setIdFacebookFriend()
+    } // setNameCategorie()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -204,9 +169,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         try {
 
-            $this->id_match = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->id_user = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-            $this->id_facebook_friend = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->id_categorie = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+            $this->name_categorie = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -216,10 +180,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 3; // 3 = UserHasUserPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = CategoriePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating UserHasUser object", $e);
+            throw new PropelException("Error populating Categorie object", $e);
         }
     }
 
@@ -239,9 +203,6 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
-        if ($this->aUser !== null && $this->id_user !== $this->aUser->getIdUser()) {
-            $this->aUser = null;
-        }
     } // ensureConsistency
 
     /**
@@ -265,13 +226,13 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(UserHasUserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(CategoriePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = UserHasUserPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = CategoriePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -281,7 +242,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aUser = null;
+            $this->collProducts = null;
+
         } // if (deep)
     }
 
@@ -302,12 +264,12 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(UserHasUserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(CategoriePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = UserHasUserQuery::create()
+            $deleteQuery = CategorieQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -345,7 +307,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(UserHasUserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(CategoriePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -365,7 +327,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserHasUserPeer::addInstanceToPool($this);
+                CategoriePeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -395,18 +357,6 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -416,6 +366,23 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->productsScheduledForDeletion !== null) {
+                if (!$this->productsScheduledForDeletion->isEmpty()) {
+                    ProductQuery::create()
+                        ->filterByPrimaryKeys($this->productsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->productsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProducts !== null) {
+                foreach ($this->collProducts as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -438,24 +405,21 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = UserHasUserPeer::ID_MATCH;
-        if (null !== $this->id_match) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserHasUserPeer::ID_MATCH . ')');
+        $this->modifiedColumns[] = CategoriePeer::ID_CATEGORIE;
+        if (null !== $this->id_categorie) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CategoriePeer::ID_CATEGORIE . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserHasUserPeer::ID_MATCH)) {
-            $modifiedColumns[':p' . $index++]  = '`id_match`';
+        if ($this->isColumnModified(CategoriePeer::ID_CATEGORIE)) {
+            $modifiedColumns[':p' . $index++]  = '`id_categorie`';
         }
-        if ($this->isColumnModified(UserHasUserPeer::ID_USER)) {
-            $modifiedColumns[':p' . $index++]  = '`id_user`';
-        }
-        if ($this->isColumnModified(UserHasUserPeer::ID_FACEBOOK_FRIEND)) {
-            $modifiedColumns[':p' . $index++]  = '`id_facebook_friend`';
+        if ($this->isColumnModified(CategoriePeer::NAME_CATEGORIE)) {
+            $modifiedColumns[':p' . $index++]  = '`name_categorie`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `user_has_user` (%s) VALUES (%s)',
+            'INSERT INTO `categorie` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -464,14 +428,11 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id_match`':
-                        $stmt->bindValue($identifier, $this->id_match, PDO::PARAM_INT);
+                    case '`id_categorie`':
+                        $stmt->bindValue($identifier, $this->id_categorie, PDO::PARAM_INT);
                         break;
-                    case '`id_user`':
-                        $stmt->bindValue($identifier, $this->id_user, PDO::PARAM_INT);
-                        break;
-                    case '`id_facebook_friend`':
-                        $stmt->bindValue($identifier, $this->id_facebook_friend, PDO::PARAM_STR);
+                    case '`name_categorie`':
+                        $stmt->bindValue($identifier, $this->name_categorie, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -486,7 +447,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', $e);
         }
-        $this->setIdMatch($pk);
+        $this->setIdCategorie($pk);
 
         $this->setNew(false);
     }
@@ -567,22 +528,18 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            // We call the validate method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if (!$this->aUser->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aUser->getValidationFailures());
-                }
-            }
-
-
-            if (($retval = UserHasUserPeer::doValidate($this, $columns)) !== true) {
+            if (($retval = CategoriePeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
+
+                if ($this->collProducts !== null) {
+                    foreach ($this->collProducts as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
 
 
             $this->alreadyInValidation = false;
@@ -603,7 +560,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = UserHasUserPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = CategoriePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -620,13 +577,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getIdMatch();
+                return $this->getIdCategorie();
                 break;
             case 1:
-                return $this->getIdUser();
-                break;
-            case 2:
-                return $this->getIdFacebookFriend();
+                return $this->getNameCategorie();
                 break;
             default:
                 return null;
@@ -651,15 +605,14 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['UserHasUser'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Categorie'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['UserHasUser'][$this->getPrimaryKey()] = true;
-        $keys = UserHasUserPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['Categorie'][$this->getPrimaryKey()] = true;
+        $keys = CategoriePeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdMatch(),
-            $keys[1] => $this->getIdUser(),
-            $keys[2] => $this->getIdFacebookFriend(),
+            $keys[0] => $this->getIdCategorie(),
+            $keys[1] => $this->getNameCategorie(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -667,8 +620,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aUser) {
-                $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->collProducts) {
+                $result['Products'] = $this->collProducts->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -688,7 +641,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = UserHasUserPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = CategoriePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -705,13 +658,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setIdMatch($value);
+                $this->setIdCategorie($value);
                 break;
             case 1:
-                $this->setIdUser($value);
-                break;
-            case 2:
-                $this->setIdFacebookFriend($value);
+                $this->setNameCategorie($value);
                 break;
         } // switch()
     }
@@ -735,11 +685,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = UserHasUserPeer::getFieldNames($keyType);
+        $keys = CategoriePeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdMatch($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setIdUser($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setIdFacebookFriend($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setIdCategorie($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setNameCategorie($arr[$keys[1]]);
     }
 
     /**
@@ -749,11 +698,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
+        $criteria = new Criteria(CategoriePeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserHasUserPeer::ID_MATCH)) $criteria->add(UserHasUserPeer::ID_MATCH, $this->id_match);
-        if ($this->isColumnModified(UserHasUserPeer::ID_USER)) $criteria->add(UserHasUserPeer::ID_USER, $this->id_user);
-        if ($this->isColumnModified(UserHasUserPeer::ID_FACEBOOK_FRIEND)) $criteria->add(UserHasUserPeer::ID_FACEBOOK_FRIEND, $this->id_facebook_friend);
+        if ($this->isColumnModified(CategoriePeer::ID_CATEGORIE)) $criteria->add(CategoriePeer::ID_CATEGORIE, $this->id_categorie);
+        if ($this->isColumnModified(CategoriePeer::NAME_CATEGORIE)) $criteria->add(CategoriePeer::NAME_CATEGORIE, $this->name_categorie);
 
         return $criteria;
     }
@@ -768,8 +716,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
-        $criteria->add(UserHasUserPeer::ID_MATCH, $this->id_match);
+        $criteria = new Criteria(CategoriePeer::DATABASE_NAME);
+        $criteria->add(CategoriePeer::ID_CATEGORIE, $this->id_categorie);
 
         return $criteria;
     }
@@ -780,18 +728,18 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getIdMatch();
+        return $this->getIdCategorie();
     }
 
     /**
-     * Generic method to set the primary key (id_match column).
+     * Generic method to set the primary key (id_categorie column).
      *
      * @param  int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setIdMatch($key);
+        $this->setIdCategorie($key);
     }
 
     /**
@@ -801,7 +749,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdMatch();
+        return null === $this->getIdCategorie();
     }
 
     /**
@@ -810,15 +758,14 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of UserHasUser (or compatible) type.
+     * @param object $copyObj An object of Categorie (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setIdUser($this->getIdUser());
-        $copyObj->setIdFacebookFriend($this->getIdFacebookFriend());
+        $copyObj->setNameCategorie($this->getNameCategorie());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -827,13 +774,19 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
+            foreach ($this->getProducts() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProduct($relObj->copy($deepCopy));
+                }
+            }
+
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdMatch(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setIdCategorie(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -846,7 +799,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return UserHasUser Clone of current object.
+     * @return Categorie Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -866,67 +819,256 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return UserHasUserPeer
+     * @return CategoriePeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new UserHasUserPeer();
+            self::$peer = new CategoriePeer();
         }
 
         return self::$peer;
     }
 
+
     /**
-     * Declares an association between this object and a User object.
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param                  User $v
-     * @return UserHasUser The current object (for fluent API support)
-     * @throws PropelException
+     * @param string $relationName The name of the relation to initialize
+     * @return void
      */
-    public function setUser(User $v = null)
+    public function initRelation($relationName)
     {
-        if ($v === null) {
-            $this->setIdUser(NULL);
-        } else {
-            $this->setIdUser($v->getIdUser());
+        if ('Product' == $relationName) {
+            $this->initProducts();
         }
+    }
 
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the User object, it will not be re-added.
-        if ($v !== null) {
-            $v->addUserHasUser($this);
-        }
-
+    /**
+     * Clears out the collProducts collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Categorie The current object (for fluent API support)
+     * @see        addProducts()
+     */
+    public function clearProducts()
+    {
+        $this->collProducts = null; // important to set this to null since that means it is uninitialized
+        $this->collProductsPartial = null;
 
         return $this;
     }
 
+    /**
+     * reset is the collProducts collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialProducts($v = true)
+    {
+        $this->collProductsPartial = $v;
+    }
 
     /**
-     * Get the associated User object
+     * Initializes the collProducts collection.
      *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return User The associated User object.
+     * By default this just sets the collProducts collection to an empty array (like clearcollProducts());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProducts($overrideExisting = true)
+    {
+        if (null !== $this->collProducts && !$overrideExisting) {
+            return;
+        }
+        $this->collProducts = new PropelObjectCollection();
+        $this->collProducts->setModel('Product');
+    }
+
+    /**
+     * Gets an array of Product objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Categorie is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Product[] List of Product objects
      * @throws PropelException
      */
-    public function getUser(PropelPDO $con = null, $doQuery = true)
+    public function getProducts($criteria = null, PropelPDO $con = null)
     {
-        if ($this->aUser === null && ($this->id_user !== null) && $doQuery) {
-            $this->aUser = UserQuery::create()->findPk($this->id_user, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addUserHasUsers($this);
-             */
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
+                // return empty collection
+                $this->initProducts();
+            } else {
+                $collProducts = ProductQuery::create(null, $criteria)
+                    ->filterByCategorie($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collProductsPartial && count($collProducts)) {
+                      $this->initProducts(false);
+
+                      foreach ($collProducts as $obj) {
+                        if (false == $this->collProducts->contains($obj)) {
+                          $this->collProducts->append($obj);
+                        }
+                      }
+
+                      $this->collProductsPartial = true;
+                    }
+
+                    $collProducts->getInternalIterator()->rewind();
+
+                    return $collProducts;
+                }
+
+                if ($partial && $this->collProducts) {
+                    foreach ($this->collProducts as $obj) {
+                        if ($obj->isNew()) {
+                            $collProducts[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProducts = $collProducts;
+                $this->collProductsPartial = false;
+            }
         }
 
-        return $this->aUser;
+        return $this->collProducts;
+    }
+
+    /**
+     * Sets a collection of Product objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $products A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Categorie The current object (for fluent API support)
+     */
+    public function setProducts(PropelCollection $products, PropelPDO $con = null)
+    {
+        $productsToDelete = $this->getProducts(new Criteria(), $con)->diff($products);
+
+
+        $this->productsScheduledForDeletion = $productsToDelete;
+
+        foreach ($productsToDelete as $productRemoved) {
+            $productRemoved->setCategorie(null);
+        }
+
+        $this->collProducts = null;
+        foreach ($products as $product) {
+            $this->addProduct($product);
+        }
+
+        $this->collProducts = $products;
+        $this->collProductsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Product objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Product objects.
+     * @throws PropelException
+     */
+    public function countProducts(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collProductsPartial && !$this->isNew();
+        if (null === $this->collProducts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProducts) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getProducts());
+            }
+            $query = ProductQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCategorie($this)
+                ->count($con);
+        }
+
+        return count($this->collProducts);
+    }
+
+    /**
+     * Method called to associate a Product object to this object
+     * through the Product foreign key attribute.
+     *
+     * @param    Product $l Product
+     * @return Categorie The current object (for fluent API support)
+     */
+    public function addProduct(Product $l)
+    {
+        if ($this->collProducts === null) {
+            $this->initProducts();
+            $this->collProductsPartial = true;
+        }
+
+        if (!in_array($l, $this->collProducts->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProduct($l);
+
+            if ($this->productsScheduledForDeletion and $this->productsScheduledForDeletion->contains($l)) {
+                $this->productsScheduledForDeletion->remove($this->productsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Product $product The product object to add.
+     */
+    protected function doAddProduct($product)
+    {
+        $this->collProducts[]= $product;
+        $product->setCategorie($this);
+    }
+
+    /**
+     * @param	Product $product The product object to remove.
+     * @return Categorie The current object (for fluent API support)
+     */
+    public function removeProduct($product)
+    {
+        if ($this->getProducts()->contains($product)) {
+            $this->collProducts->remove($this->collProducts->search($product));
+            if (null === $this->productsScheduledForDeletion) {
+                $this->productsScheduledForDeletion = clone $this->collProducts;
+                $this->productsScheduledForDeletion->clear();
+            }
+            $this->productsScheduledForDeletion[]= $product;
+            $product->setCategorie(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -934,9 +1076,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->id_match = null;
-        $this->id_user = null;
-        $this->id_facebook_friend = null;
+        $this->id_categorie = null;
+        $this->name_categorie = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
@@ -959,14 +1100,19 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->aUser instanceof Persistent) {
-              $this->aUser->clearAllReferences($deep);
+            if ($this->collProducts) {
+                foreach ($this->collProducts as $o) {
+                    $o->clearAllReferences($deep);
+                }
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        $this->aUser = null;
+        if ($this->collProducts instanceof PropelCollection) {
+            $this->collProducts->clearIterator();
+        }
+        $this->collProducts = null;
     }
 
     /**
@@ -976,7 +1122,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserHasUserPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(CategoriePeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
