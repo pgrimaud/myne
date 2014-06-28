@@ -5,7 +5,8 @@ ini_set('display_errors', '1');
 define('BASEDIR', dirname(__FILE__));
 
 // inclure le script Propel principal
-require_once 'propel/Propel.php';
+//require_once 'propel/Propel.php';
+require_once 'propel/runtime/lib/Propel.php';
 
 // Initialisation de Propel avec la configuration du runtime
 Propel::init(BASEDIR . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'myne-conf.php');

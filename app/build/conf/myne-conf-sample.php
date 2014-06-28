@@ -11,7 +11,7 @@ $conf = array (
       array (
         'dsn' => 'mysql:host=localhost;dbname=myne',
         'user' => 'user',
-        'password' => 'password',
+        'password' => '',
         'settings' =>
         array (
           'charset' =>
@@ -28,15 +28,15 @@ $conf = array (
         ),
       ),
     ),
-    'default' => 'universal_music',
+    'default' => 'myne',
   ),
-  'log' =>
+  /*'log' =>
   array (
     'type' => 'file',
     'name' => '/var/www/log/propel.log',
     'ident' => 'propel',
     'level' => '7',
-  ),
+  ),*/
   'generator_version' => '1.6.8',
 );
 $conf['classmap'] = include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classmap-myne-conf.php');
