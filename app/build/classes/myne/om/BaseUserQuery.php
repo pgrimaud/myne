@@ -71,8 +71,14 @@ abstract class BaseUserQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'myne', $modelName = 'User', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'default';
+        }
+        if (null === $modelName) {
+            $modelName = 'User';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -89,10 +95,8 @@ abstract class BaseUserQuery extends ModelCriteria
         if ($criteria instanceof UserQuery) {
             return $criteria;
         }
-        $query = new UserQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new UserQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -120,7 +124,7 @@ abstract class BaseUserQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = UserPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -500,7 +504,7 @@ abstract class BaseUserQuery extends ModelCriteria
      * <code>
      * $query->filterByDate('2011-03-14'); // WHERE date = '2011-03-14'
      * $query->filterByDate('now'); // WHERE date = '2011-03-14'
-     * $query->filterByDate(array('max' => 'yesterday')); // WHERE date > '2011-03-13'
+     * $query->filterByDate(array('max' => 'yesterday')); // WHERE date < '2011-03-13'
      * </code>
      *
      * @param     mixed $date The value to use as filter.

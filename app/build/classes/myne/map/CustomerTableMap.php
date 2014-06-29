@@ -41,8 +41,8 @@ class CustomerTableMap extends TableMap
         $this->addPrimaryKey('id_customer', 'IdCustomer', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 255, null);
         $this->addColumn('email', 'Email', 'VARCHAR', false, 255, null);
-        $this->addColumn('password', 'Password', 'VARCHAR', false, 16, null);
-        $this->addColumn('api_token', 'ApiToken', 'VARCHAR', false, 16, null);
+        $this->addColumn('password', 'Password', 'VARCHAR', false, 32, null);
+        $this->addColumn('api_token', 'ApiToken', 'VARCHAR', false, 32, null);
         // validators
     } // initialize()
 
@@ -51,7 +51,7 @@ class CustomerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('CustomerProduct', 'CustomerProduct', RelationMap::ONE_TO_ONE, array('id_customer' => 'id_customer', ), 'CASCADE', 'CASCADE');
+        $this->addRelation('CustomerProduct', 'CustomerProduct', RelationMap::ONE_TO_MANY, array('id_customer' => 'id_customer', ), 'CASCADE', 'CASCADE', 'CustomerProducts');
     } // buildRelations()
 
 } // CustomerTableMap

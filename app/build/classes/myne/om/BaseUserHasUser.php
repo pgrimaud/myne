@@ -24,10 +24,16 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
+
+    /**
+     * The value for the id_match field.
+     * @var        int
+     */
+    protected $id_match;
 
     /**
      * The value for the id_user field.
@@ -67,12 +73,24 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     protected $alreadyInClearAllReferencesDeep = false;
 
     /**
+     * Get the [id_match] column value.
+     *
+     * @return int
+     */
+    public function getIdMatch()
+    {
+
+        return $this->id_match;
+    }
+
+    /**
      * Get the [id_user] column value.
      *
      * @return int
      */
     public function getIdUser()
     {
+
         return $this->id_user;
     }
 
@@ -83,13 +101,35 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function getIdFacebookFriend()
     {
+
         return $this->id_facebook_friend;
     }
 
     /**
+     * Set the value of [id_match] column.
+     *
+     * @param  int $v new value
+     * @return UserHasUser The current object (for fluent API support)
+     */
+    public function setIdMatch($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_match !== $v) {
+            $this->id_match = $v;
+            $this->modifiedColumns[] = UserHasUserPeer::ID_MATCH;
+        }
+
+
+        return $this;
+    } // setIdMatch()
+
+    /**
      * Set the value of [id_user] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return UserHasUser The current object (for fluent API support)
      */
     public function setIdUser($v)
@@ -114,12 +154,12 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     /**
      * Set the value of [id_facebook_friend] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return UserHasUser The current object (for fluent API support)
      */
     public function setIdFacebookFriend($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -155,7 +195,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -164,8 +204,9 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         try {
 
-            $this->id_user = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->id_facebook_friend = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->id_match = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+            $this->id_user = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+            $this->id_facebook_friend = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -174,7 +215,8 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 2; // 2 = UserHasUserPeer::NUM_HYDRATE_COLUMNS.
+
+            return $startcol + 3; // 3 = UserHasUserPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating UserHasUser object", $e);
@@ -354,7 +396,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -396,8 +438,15 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[] = UserHasUserPeer::ID_MATCH;
+        if (null !== $this->id_match) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserHasUserPeer::ID_MATCH . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(UserHasUserPeer::ID_MATCH)) {
+            $modifiedColumns[':p' . $index++]  = '`id_match`';
+        }
         if ($this->isColumnModified(UserHasUserPeer::ID_USER)) {
             $modifiedColumns[':p' . $index++]  = '`id_user`';
         }
@@ -415,6 +464,9 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
+                    case '`id_match`':
+                        $stmt->bindValue($identifier, $this->id_match, PDO::PARAM_INT);
+                        break;
                     case '`id_user`':
                         $stmt->bindValue($identifier, $this->id_user, PDO::PARAM_INT);
                         break;
@@ -428,6 +480,13 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', $e);
+        }
+        $this->setIdMatch($pk);
 
         $this->setNew(false);
     }
@@ -494,10 +553,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -509,7 +568,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -561,9 +620,12 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getIdUser();
+                return $this->getIdMatch();
                 break;
             case 1:
+                return $this->getIdUser();
+                break;
+            case 2:
                 return $this->getIdFacebookFriend();
                 break;
             default:
@@ -595,9 +657,15 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
         $alreadyDumpedObjects['UserHasUser'][$this->getPrimaryKey()] = true;
         $keys = UserHasUserPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdUser(),
-            $keys[1] => $this->getIdFacebookFriend(),
+            $keys[0] => $this->getIdMatch(),
+            $keys[1] => $this->getIdUser(),
+            $keys[2] => $this->getIdFacebookFriend(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aUser) {
                 $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -637,9 +705,12 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setIdUser($value);
+                $this->setIdMatch($value);
                 break;
             case 1:
+                $this->setIdUser($value);
+                break;
+            case 2:
                 $this->setIdFacebookFriend($value);
                 break;
         } // switch()
@@ -666,8 +737,9 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         $keys = UserHasUserPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdUser($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setIdFacebookFriend($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setIdMatch($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setIdUser($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setIdFacebookFriend($arr[$keys[2]]);
     }
 
     /**
@@ -679,6 +751,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
 
+        if ($this->isColumnModified(UserHasUserPeer::ID_MATCH)) $criteria->add(UserHasUserPeer::ID_MATCH, $this->id_match);
         if ($this->isColumnModified(UserHasUserPeer::ID_USER)) $criteria->add(UserHasUserPeer::ID_USER, $this->id_user);
         if ($this->isColumnModified(UserHasUserPeer::ID_FACEBOOK_FRIEND)) $criteria->add(UserHasUserPeer::ID_FACEBOOK_FRIEND, $this->id_facebook_friend);
 
@@ -696,7 +769,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
-        $criteria->add(UserHasUserPeer::ID_USER, $this->id_user);
+        $criteria->add(UserHasUserPeer::ID_MATCH, $this->id_match);
 
         return $criteria;
     }
@@ -707,18 +780,18 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getIdUser();
+        return $this->getIdMatch();
     }
 
     /**
-     * Generic method to set the primary key (id_user column).
+     * Generic method to set the primary key (id_match column).
      *
      * @param  int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setIdUser($key);
+        $this->setIdMatch($key);
     }
 
     /**
@@ -728,7 +801,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdUser();
+        return null === $this->getIdMatch();
     }
 
     /**
@@ -744,6 +817,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setIdUser($this->getIdUser());
         $copyObj->setIdFacebookFriend($this->getIdFacebookFriend());
 
         if ($deepCopy && !$this->startCopy) {
@@ -753,18 +827,13 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            $relObj = $this->getUser();
-            if ($relObj) {
-                $copyObj->setUser($relObj->copy($deepCopy));
-            }
-
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdUser(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setIdMatch(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -811,7 +880,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a User object.
      *
-     * @param             User $v
+     * @param                  User $v
      * @return UserHasUser The current object (for fluent API support)
      * @throws PropelException
      */
@@ -825,9 +894,10 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
 
         $this->aUser = $v;
 
-        // Add binding for other direction of this 1:1 relationship.
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the User object, it will not be re-added.
         if ($v !== null) {
-            $v->setUserHasUser($this);
+            $v->addUserHasUser($this);
         }
 
 
@@ -847,8 +917,13 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
     {
         if ($this->aUser === null && ($this->id_user !== null) && $doQuery) {
             $this->aUser = UserQuery::create()->findPk($this->id_user, $con);
-            // Because this foreign key represents a one-to-one relationship, we will create a bi-directional association.
-            $this->aUser->setUserHasUser($this);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUser->addUserHasUsers($this);
+             */
         }
 
         return $this->aUser;
@@ -859,6 +934,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      */
     public function clear()
     {
+        $this->id_match = null;
         $this->id_user = null;
         $this->id_facebook_friend = null;
         $this->alreadyInSave = false;
@@ -875,7 +951,7 @@ abstract class BaseUserHasUser extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

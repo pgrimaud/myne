@@ -36,10 +36,10 @@ class CustomerProductTableMap extends TableMap
         $this->setPhpName('CustomerProduct');
         $this->setClassname('CustomerProduct');
         $this->setPackage('myne');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('id_customer', 'IdCustomer', 'INTEGER' , 'customer', 'id_customer', true, null, null);
-        $this->addForeignKey('id_product', 'IdProduct', 'INTEGER', 'product', 'id_product', false, null, null);
+        $this->addForeignPrimaryKey('id_product', 'IdProduct', 'INTEGER' , 'product', 'id_product', true, null, null);
         // validators
     } // initialize()
 

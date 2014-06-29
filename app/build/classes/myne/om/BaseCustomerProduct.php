@@ -24,7 +24,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -78,6 +78,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      */
     public function getIdCustomer()
     {
+
         return $this->id_customer;
     }
 
@@ -88,13 +89,14 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      */
     public function getIdProduct()
     {
+
         return $this->id_product;
     }
 
     /**
      * Set the value of [id_customer] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return CustomerProduct The current object (for fluent API support)
      */
     public function setIdCustomer($v)
@@ -119,7 +121,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     /**
      * Set the value of [id_product] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return CustomerProduct The current object (for fluent API support)
      */
     public function setIdProduct($v)
@@ -164,7 +166,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -183,6 +185,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
+
             return $startcol + 2; // 2 = CustomerProductPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
@@ -367,7 +370,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -416,10 +419,6 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = CustomerProductPeer::ID_CUSTOMER;
-        if (null !== $this->id_customer) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CustomerProductPeer::ID_CUSTOMER . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(CustomerProductPeer::ID_CUSTOMER)) {
@@ -452,13 +451,6 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', $e);
-        }
-        $this->setIdCustomer($pk);
 
         $this->setNew(false);
     }
@@ -525,10 +517,10 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -540,7 +532,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
 
 
             // We call the validate method on the following object(s) if they
-            // were passed to this object by their coresponding set
+            // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
@@ -626,15 +618,20 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['CustomerProduct'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['CustomerProduct'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['CustomerProduct'][$this->getPrimaryKey()] = true;
+        $alreadyDumpedObjects['CustomerProduct'][serialize($this->getPrimaryKey())] = true;
         $keys = CustomerProductPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getIdCustomer(),
             $keys[1] => $this->getIdProduct(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
             if (null !== $this->aProduct) {
                 $result['Product'] = $this->aProduct->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -737,28 +734,35 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     {
         $criteria = new Criteria(CustomerProductPeer::DATABASE_NAME);
         $criteria->add(CustomerProductPeer::ID_CUSTOMER, $this->id_customer);
+        $criteria->add(CustomerProductPeer::ID_PRODUCT, $this->id_product);
 
         return $criteria;
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getIdCustomer();
+        $pks = array();
+        $pks[0] = $this->getIdCustomer();
+        $pks[1] = $this->getIdProduct();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id_customer column).
+     * Set the [composite] primary key.
      *
-     * @param  int $key Primary key.
+     * @param array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setIdCustomer($key);
+        $this->setIdCustomer($keys[0]);
+        $this->setIdProduct($keys[1]);
     }
 
     /**
@@ -768,7 +772,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdCustomer();
+        return (null === $this->getIdCustomer()) && (null === $this->getIdProduct());
     }
 
     /**
@@ -784,6 +788,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setIdCustomer($this->getIdCustomer());
         $copyObj->setIdProduct($this->getIdProduct());
 
         if ($deepCopy && !$this->startCopy) {
@@ -793,18 +798,12 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            $relObj = $this->getCustomer();
-            if ($relObj) {
-                $copyObj->setCustomer($relObj->copy($deepCopy));
-            }
-
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdCustomer(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -851,7 +850,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Product object.
      *
-     * @param             Product $v
+     * @param                  Product $v
      * @return CustomerProduct The current object (for fluent API support)
      * @throws PropelException
      */
@@ -903,7 +902,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     /**
      * Declares an association between this object and a Customer object.
      *
-     * @param             Customer $v
+     * @param                  Customer $v
      * @return CustomerProduct The current object (for fluent API support)
      * @throws PropelException
      */
@@ -917,9 +916,10 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
 
         $this->aCustomer = $v;
 
-        // Add binding for other direction of this 1:1 relationship.
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Customer object, it will not be re-added.
         if ($v !== null) {
-            $v->setCustomerProduct($this);
+            $v->addCustomerProduct($this);
         }
 
 
@@ -939,8 +939,13 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
     {
         if ($this->aCustomer === null && ($this->id_customer !== null) && $doQuery) {
             $this->aCustomer = CustomerQuery::create()->findPk($this->id_customer, $con);
-            // Because this foreign key represents a one-to-one relationship, we will create a bi-directional association.
-            $this->aCustomer->setCustomerProduct($this);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCustomer->addCustomerProducts($this);
+             */
         }
 
         return $this->aCustomer;
@@ -967,7 +972,7 @@ abstract class BaseCustomerProduct extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */

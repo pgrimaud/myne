@@ -6,9 +6,11 @@
  *
  *
  *
+ * @method UserHasUserQuery orderByIdMatch($order = Criteria::ASC) Order by the id_match column
  * @method UserHasUserQuery orderByIdUser($order = Criteria::ASC) Order by the id_user column
  * @method UserHasUserQuery orderByIdFacebookFriend($order = Criteria::ASC) Order by the id_facebook_friend column
  *
+ * @method UserHasUserQuery groupByIdMatch() Group by the id_match column
  * @method UserHasUserQuery groupByIdUser() Group by the id_user column
  * @method UserHasUserQuery groupByIdFacebookFriend() Group by the id_facebook_friend column
  *
@@ -23,8 +25,10 @@
  * @method UserHasUser findOne(PropelPDO $con = null) Return the first UserHasUser matching the query
  * @method UserHasUser findOneOrCreate(PropelPDO $con = null) Return the first UserHasUser matching the query, or a new UserHasUser object populated from the query conditions when no match is found
  *
+ * @method UserHasUser findOneByIdUser(int $id_user) Return the first UserHasUser filtered by the id_user column
  * @method UserHasUser findOneByIdFacebookFriend(string $id_facebook_friend) Return the first UserHasUser filtered by the id_facebook_friend column
  *
+ * @method array findByIdMatch(int $id_match) Return UserHasUser objects filtered by the id_match column
  * @method array findByIdUser(int $id_user) Return UserHasUser objects filtered by the id_user column
  * @method array findByIdFacebookFriend(string $id_facebook_friend) Return UserHasUser objects filtered by the id_facebook_friend column
  *
@@ -39,8 +43,14 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'myne', $modelName = 'UserHasUser', $modelAlias = null)
+    public function __construct($dbName = null, $modelName = null, $modelAlias = null)
     {
+        if (null === $dbName) {
+            $dbName = 'default';
+        }
+        if (null === $modelName) {
+            $modelName = 'UserHasUser';
+        }
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -57,10 +67,8 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
         if ($criteria instanceof UserHasUserQuery) {
             return $criteria;
         }
-        $query = new UserHasUserQuery();
-        if (null !== $modelAlias) {
-            $query->setModelAlias($modelAlias);
-        }
+        $query = new UserHasUserQuery(null, null, $modelAlias);
+
         if ($criteria instanceof Criteria) {
             $query->mergeWith($criteria);
         }
@@ -88,7 +96,7 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
             return null;
         }
         if ((null !== ($obj = UserHasUserPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is alredy in the instance pool
+            // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
@@ -113,7 +121,7 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
      * @return                 UserHasUser A model object, or null if the key is not found
      * @throws PropelException
      */
-     public function findOneByIdUser($key, $con = null)
+     public function findOneByIdMatch($key, $con = null)
      {
         return $this->findPk($key, $con);
      }
@@ -130,7 +138,7 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_user`, `id_facebook_friend` FROM `user_has_user` WHERE `id_user` = :p0';
+        $sql = 'SELECT `id_match`, `id_user`, `id_facebook_friend` FROM `user_has_user` WHERE `id_match` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -203,7 +211,7 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(UserHasUserPeer::ID_USER, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $key, Criteria::EQUAL);
     }
 
     /**
@@ -216,7 +224,49 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(UserHasUserPeer::ID_USER, $keys, Criteria::IN);
+        return $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $keys, Criteria::IN);
+    }
+
+    /**
+     * Filter the query on the id_match column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdMatch(1234); // WHERE id_match = 1234
+     * $query->filterByIdMatch(array(12, 34)); // WHERE id_match IN (12, 34)
+     * $query->filterByIdMatch(array('min' => 12)); // WHERE id_match >= 12
+     * $query->filterByIdMatch(array('max' => 12)); // WHERE id_match <= 12
+     * </code>
+     *
+     * @param     mixed $idMatch The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserHasUserQuery The current query, for fluid interface
+     */
+    public function filterByIdMatch($idMatch = null, $comparison = null)
+    {
+        if (is_array($idMatch)) {
+            $useMinMax = false;
+            if (isset($idMatch['min'])) {
+                $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $idMatch['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idMatch['max'])) {
+                $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $idMatch['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $idMatch, $comparison);
     }
 
     /**
@@ -378,7 +428,7 @@ abstract class BaseUserHasUserQuery extends ModelCriteria
     public function prune($userHasUser = null)
     {
         if ($userHasUser) {
-            $this->addUsingAlias(UserHasUserPeer::ID_USER, $userHasUser->getIdUser(), Criteria::NOT_EQUAL);
+            $this->addUsingAlias(UserHasUserPeer::ID_MATCH, $userHasUser->getIdMatch(), Criteria::NOT_EQUAL);
         }
 
         return $this;

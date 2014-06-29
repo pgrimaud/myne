@@ -12,7 +12,7 @@ abstract class BaseCustomerProductPeer
 {
 
     /** the default database name for this class */
-    const DATABASE_NAME = 'myne';
+    const DATABASE_NAME = 'default';
 
     /** the table name for this class */
     const TABLE_NAME = 'customer_product';
@@ -42,7 +42,7 @@ abstract class BaseCustomerProductPeer
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of CustomerProduct objects.
+     * An identity map to hold any loaded instances of CustomerProduct objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array CustomerProduct[]
@@ -208,7 +208,7 @@ abstract class BaseCustomerProductPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 CustomerProduct
+     * @return CustomerProduct
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -275,14 +275,14 @@ abstract class BaseCustomerProductPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      CustomerProduct $obj A CustomerProduct object.
+     * @param CustomerProduct $obj A CustomerProduct object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getIdCustomer();
+                $key = serialize(array((string) $obj->getIdCustomer(), (string) $obj->getIdProduct()));
             } // if key === null
             CustomerProductPeer::$instances[$key] = $obj;
         }
@@ -305,10 +305,10 @@ abstract class BaseCustomerProductPeer
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
             if (is_object($value) && $value instanceof CustomerProduct) {
-                $key = (string) $value->getIdCustomer();
-            } elseif (is_scalar($value)) {
+                $key = serialize(array((string) $value->getIdCustomer(), (string) $value->getIdProduct()));
+            } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key
-                $key = (string) $value;
+                $key = serialize(array((string) $value[0], (string) $value[1]));
             } else {
                 $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or CustomerProduct object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
@@ -325,7 +325,7 @@ abstract class BaseCustomerProductPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   CustomerProduct Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return CustomerProduct Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -346,10 +346,8 @@ abstract class BaseCustomerProductPeer
      */
     public static function clearInstancePool($and_clear_all_references = false)
     {
-      if ($and_clear_all_references)
-      {
-        foreach (CustomerProductPeer::$instances as $instance)
-        {
+      if ($and_clear_all_references) {
+        foreach (CustomerProductPeer::$instances as $instance) {
           $instance->clearAllReferences(true);
         }
       }
@@ -377,11 +375,11 @@ abstract class BaseCustomerProductPeer
     public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
     {
         // If the PK cannot be derived from the row, return null.
-        if ($row[$startcol] === null) {
+        if ($row[$startcol] === null && $row[$startcol + 1] === null) {
             return null;
         }
 
-        return (string) $row[$startcol];
+        return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
     }
 
     /**
@@ -396,7 +394,7 @@ abstract class BaseCustomerProductPeer
     public static function getPrimaryKeyFromRow($row, $startcol = 0)
     {
 
-        return (int) $row[$startcol];
+        return array((int) $row[$startcol], (int) $row[$startcol + 1]);
     }
 
     /**
@@ -683,8 +681,7 @@ abstract class BaseCustomerProductPeer
                 } // if obj2 already loaded
 
                 // Add the $obj1 (CustomerProduct) to $obj2 (Customer)
-                // one to one relationship
-                $obj1->setCustomer($obj2);
+                $obj2->addCustomerProduct($obj1);
 
             } // if joined row was not null
 
@@ -830,7 +827,7 @@ abstract class BaseCustomerProductPeer
                 } // if obj3 loaded
 
                 // Add the $obj1 (CustomerProduct) to the collection in $obj3 (Customer)
-                $obj1->setCustomer($obj3);
+                $obj3->addCustomerProduct($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -1005,7 +1002,7 @@ abstract class BaseCustomerProductPeer
                 } // if $obj2 already loaded
 
                 // Add the $obj1 (CustomerProduct) to the collection in $obj2 (Customer)
-                $obj1->setCustomer($obj2);
+                $obj2->addCustomerProduct($obj1);
 
             } // if joined row is not null
 
@@ -1109,7 +1106,7 @@ abstract class BaseCustomerProductPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseCustomerProductPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseCustomerProductPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new CustomerProductTableMap());
+        $dbMap->addTableObject(new \CustomerProductTableMap());
       }
     }
 
@@ -1145,10 +1142,6 @@ abstract class BaseCustomerProductPeer
             $criteria = $values->buildCriteria(); // build Criteria from CustomerProduct object
         }
 
-        if ($criteria->containsKey(CustomerProductPeer::ID_CUSTOMER) && $criteria->keyContainsValue(CustomerProductPeer::ID_CUSTOMER) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CustomerProductPeer::ID_CUSTOMER.')');
-        }
-
 
         // Set the correct dbName
         $criteria->setDbName(CustomerProductPeer::DATABASE_NAME);
@@ -1159,7 +1152,7 @@ abstract class BaseCustomerProductPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1191,6 +1184,14 @@ abstract class BaseCustomerProductPeer
             $value = $criteria->remove(CustomerProductPeer::ID_CUSTOMER);
             if ($value) {
                 $selectCriteria->add(CustomerProductPeer::ID_CUSTOMER, $value, $comparison);
+            } else {
+                $selectCriteria->setPrimaryTableName(CustomerProductPeer::TABLE_NAME);
+            }
+
+            $comparison = $criteria->getComparison(CustomerProductPeer::ID_PRODUCT);
+            $value = $criteria->remove(CustomerProductPeer::ID_PRODUCT);
+            if ($value) {
+                $selectCriteria->add(CustomerProductPeer::ID_PRODUCT, $value, $comparison);
             } else {
                 $selectCriteria->setPrimaryTableName(CustomerProductPeer::TABLE_NAME);
             }
@@ -1232,7 +1233,7 @@ abstract class BaseCustomerProductPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1269,10 +1270,18 @@ abstract class BaseCustomerProductPeer
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(CustomerProductPeer::DATABASE_NAME);
-            $criteria->add(CustomerProductPeer::ID_CUSTOMER, (array) $values, Criteria::IN);
-            // invalidate the cache for this object(s)
-            foreach ((array) $values as $singleval) {
-                CustomerProductPeer::removeInstanceFromPool($singleval);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(CustomerProductPeer::ID_CUSTOMER, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(CustomerProductPeer::ID_PRODUCT, $value[1]));
+                $criteria->addOr($criterion);
+                // we can invalidate the cache for this single PK
+                CustomerProductPeer::removeInstanceFromPool($value);
             }
         }
 
@@ -1291,7 +1300,7 @@ abstract class BaseCustomerProductPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -1304,7 +1313,7 @@ abstract class BaseCustomerProductPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      CustomerProduct $obj The object to validate.
+     * @param CustomerProduct $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -1335,58 +1344,28 @@ abstract class BaseCustomerProductPeer
     }
 
     /**
-     * Retrieve a single object by pkey.
-     *
-     * @param      int $pk the primary key.
-     * @param      PropelPDO $con the connection to use
+     * Retrieve object using using composite pkey values.
+     * @param   int $id_customer
+     * @param   int $id_product
+     * @param      PropelPDO $con
      * @return CustomerProduct
      */
-    public static function retrieveByPK($pk, PropelPDO $con = null)
-    {
-
-        if (null !== ($obj = CustomerProductPeer::getInstanceFromPool((string) $pk))) {
-            return $obj;
+    public static function retrieveByPK($id_customer, $id_product, PropelPDO $con = null) {
+        $_instancePoolKey = serialize(array((string) $id_customer, (string) $id_product));
+         if (null !== ($obj = CustomerProductPeer::getInstanceFromPool($_instancePoolKey))) {
+             return $obj;
         }
 
         if ($con === null) {
             $con = Propel::getConnection(CustomerProductPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-
         $criteria = new Criteria(CustomerProductPeer::DATABASE_NAME);
-        $criteria->add(CustomerProductPeer::ID_CUSTOMER, $pk);
-
+        $criteria->add(CustomerProductPeer::ID_CUSTOMER, $id_customer);
+        $criteria->add(CustomerProductPeer::ID_PRODUCT, $id_product);
         $v = CustomerProductPeer::doSelect($criteria, $con);
 
-        return !empty($v) > 0 ? $v[0] : null;
+        return !empty($v) ? $v[0] : null;
     }
-
-    /**
-     * Retrieve multiple objects by pkey.
-     *
-     * @param      array $pks List of primary keys
-     * @param      PropelPDO $con the connection to use
-     * @return CustomerProduct[]
-     * @throws PropelException Any exceptions caught during processing will be
-     *		 rethrown wrapped into a PropelException.
-     */
-    public static function retrieveByPKs($pks, PropelPDO $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getConnection(CustomerProductPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-        }
-
-        $objs = null;
-        if (empty($pks)) {
-            $objs = array();
-        } else {
-            $criteria = new Criteria(CustomerProductPeer::DATABASE_NAME);
-            $criteria->add(CustomerProductPeer::ID_CUSTOMER, $pks, Criteria::IN);
-            $objs = CustomerProductPeer::doSelect($criteria, $con);
-        }
-
-        return $objs;
-    }
-
 } // BaseCustomerProductPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

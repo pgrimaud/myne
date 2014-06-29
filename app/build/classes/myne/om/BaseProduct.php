@@ -24,7 +24,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
     protected static $peer;
 
     /**
-     * The flag var to prevent infinit loop in deep copy
+     * The flag var to prevent infinite loop in deep copy
      * @var       boolean
      */
     protected $startCopy = false;
@@ -46,6 +46,29 @@ abstract class BaseProduct extends BaseObject implements Persistent
      * @var        string
      */
     protected $name;
+
+    /**
+     * The value for the id_categorie field.
+     * @var        int
+     */
+    protected $id_categorie;
+
+    /**
+     * The value for the brand field.
+     * @var        string
+     */
+    protected $brand;
+
+    /**
+     * The value for the link_image field.
+     * @var        string
+     */
+    protected $link_image;
+
+    /**
+     * @var        Categorie
+     */
+    protected $aCategorie;
 
     /**
      * @var        PropelObjectCollection|Review[] Collection to store aggregation of Review objects.
@@ -98,6 +121,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
      */
     public function getIdProduct()
     {
+
         return $this->id_product;
     }
 
@@ -108,6 +132,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
      */
     public function getEanCode()
     {
+
         return $this->ean_code;
     }
 
@@ -118,13 +143,47 @@ abstract class BaseProduct extends BaseObject implements Persistent
      */
     public function getName()
     {
+
         return $this->name;
+    }
+
+    /**
+     * Get the [id_categorie] column value.
+     *
+     * @return int
+     */
+    public function getIdCategorie()
+    {
+
+        return $this->id_categorie;
+    }
+
+    /**
+     * Get the [brand] column value.
+     *
+     * @return string
+     */
+    public function getBrand()
+    {
+
+        return $this->brand;
+    }
+
+    /**
+     * Get the [link_image] column value.
+     *
+     * @return string
+     */
+    public function getLinkImage()
+    {
+
+        return $this->link_image;
     }
 
     /**
      * Set the value of [id_product] column.
      *
-     * @param int $v new value
+     * @param  int $v new value
      * @return Product The current object (for fluent API support)
      */
     public function setIdProduct($v)
@@ -145,12 +204,12 @@ abstract class BaseProduct extends BaseObject implements Persistent
     /**
      * Set the value of [ean_code] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Product The current object (for fluent API support)
      */
     public function setEanCode($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -166,12 +225,12 @@ abstract class BaseProduct extends BaseObject implements Persistent
     /**
      * Set the value of [name] column.
      *
-     * @param string $v new value
+     * @param  string $v new value
      * @return Product The current object (for fluent API support)
      */
     public function setName($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
@@ -183,6 +242,73 @@ abstract class BaseProduct extends BaseObject implements Persistent
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [id_categorie] column.
+     *
+     * @param  int $v new value
+     * @return Product The current object (for fluent API support)
+     */
+    public function setIdCategorie($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_categorie !== $v) {
+            $this->id_categorie = $v;
+            $this->modifiedColumns[] = ProductPeer::ID_CATEGORIE;
+        }
+
+        if ($this->aCategorie !== null && $this->aCategorie->getIdCategorie() !== $v) {
+            $this->aCategorie = null;
+        }
+
+
+        return $this;
+    } // setIdCategorie()
+
+    /**
+     * Set the value of [brand] column.
+     *
+     * @param  string $v new value
+     * @return Product The current object (for fluent API support)
+     */
+    public function setBrand($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->brand !== $v) {
+            $this->brand = $v;
+            $this->modifiedColumns[] = ProductPeer::BRAND;
+        }
+
+
+        return $this;
+    } // setBrand()
+
+    /**
+     * Set the value of [link_image] column.
+     *
+     * @param  string $v new value
+     * @return Product The current object (for fluent API support)
+     */
+    public function setLinkImage($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->link_image !== $v) {
+            $this->link_image = $v;
+            $this->modifiedColumns[] = ProductPeer::LINK_IMAGE;
+        }
+
+
+        return $this;
+    } // setLinkImage()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -207,7 +333,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
      * more tables.
      *
      * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
@@ -219,6 +345,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $this->id_product = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->ean_code = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
             $this->name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->id_categorie = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->brand = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->link_image = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -227,7 +356,8 @@ abstract class BaseProduct extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 3; // 3 = ProductPeer::NUM_HYDRATE_COLUMNS.
+
+            return $startcol + 6; // 6 = ProductPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Product object", $e);
@@ -250,6 +380,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
+        if ($this->aCategorie !== null && $this->id_categorie !== $this->aCategorie->getIdCategorie()) {
+            $this->aCategorie = null;
+        }
     } // ensureConsistency
 
     /**
@@ -289,6 +422,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aCategorie = null;
             $this->collReviews = null;
 
             $this->collCustomerProducts = null;
@@ -406,6 +540,18 @@ abstract class BaseProduct extends BaseObject implements Persistent
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aCategorie !== null) {
+                if ($this->aCategorie->isModified() || $this->aCategorie->isNew()) {
+                    $affectedRows += $this->aCategorie->save($con);
+                }
+                $this->setCategorie($this->aCategorie);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -436,10 +582,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
 
             if ($this->customerProductsScheduledForDeletion !== null) {
                 if (!$this->customerProductsScheduledForDeletion->isEmpty()) {
-                    foreach ($this->customerProductsScheduledForDeletion as $customerProduct) {
-                        // need to save related object because we set the relation to null
-                        $customerProduct->save($con);
-                    }
+                    CustomerProductQuery::create()
+                        ->filterByPrimaryKeys($this->customerProductsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->customerProductsScheduledForDeletion = null;
                 }
             }
@@ -487,6 +632,15 @@ abstract class BaseProduct extends BaseObject implements Persistent
         if ($this->isColumnModified(ProductPeer::NAME)) {
             $modifiedColumns[':p' . $index++]  = '`name`';
         }
+        if ($this->isColumnModified(ProductPeer::ID_CATEGORIE)) {
+            $modifiedColumns[':p' . $index++]  = '`id_categorie`';
+        }
+        if ($this->isColumnModified(ProductPeer::BRAND)) {
+            $modifiedColumns[':p' . $index++]  = '`brand`';
+        }
+        if ($this->isColumnModified(ProductPeer::LINK_IMAGE)) {
+            $modifiedColumns[':p' . $index++]  = '`link_image`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `product` (%s) VALUES (%s)',
@@ -506,6 +660,15 @@ abstract class BaseProduct extends BaseObject implements Persistent
                         break;
                     case '`name`':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case '`id_categorie`':
+                        $stmt->bindValue($identifier, $this->id_categorie, PDO::PARAM_INT);
+                        break;
+                    case '`brand`':
+                        $stmt->bindValue($identifier, $this->brand, PDO::PARAM_STR);
+                        break;
+                    case '`link_image`':
+                        $stmt->bindValue($identifier, $this->link_image, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -587,10 +750,10 @@ abstract class BaseProduct extends BaseObject implements Persistent
      *
      * In addition to checking the current object, all related objects will
      * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
+     * an aggregated array of ValidationFailed objects will be returned.
      *
      * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objects otherwise.
      */
     protected function doValidate($columns = null)
     {
@@ -599,6 +762,18 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $retval = null;
 
             $failureMap = array();
+
+
+            // We call the validate method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aCategorie !== null) {
+                if (!$this->aCategorie->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aCategorie->getValidationFailures());
+                }
+            }
 
 
             if (($retval = ProductPeer::doValidate($this, $columns)) !== true) {
@@ -666,6 +841,15 @@ abstract class BaseProduct extends BaseObject implements Persistent
             case 2:
                 return $this->getName();
                 break;
+            case 3:
+                return $this->getIdCategorie();
+                break;
+            case 4:
+                return $this->getBrand();
+                break;
+            case 5:
+                return $this->getLinkImage();
+                break;
             default:
                 return null;
                 break;
@@ -698,8 +882,19 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $keys[0] => $this->getIdProduct(),
             $keys[1] => $this->getEanCode(),
             $keys[2] => $this->getName(),
+            $keys[3] => $this->getIdCategorie(),
+            $keys[4] => $this->getBrand(),
+            $keys[5] => $this->getLinkImage(),
         );
+        $virtualColumns = $this->virtualColumns;
+        foreach ($virtualColumns as $key => $virtualColumn) {
+            $result[$key] = $virtualColumn;
+        }
+
         if ($includeForeignObjects) {
+            if (null !== $this->aCategorie) {
+                $result['Categorie'] = $this->aCategorie->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collReviews) {
                 $result['Reviews'] = $this->collReviews->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
@@ -749,6 +944,15 @@ abstract class BaseProduct extends BaseObject implements Persistent
             case 2:
                 $this->setName($value);
                 break;
+            case 3:
+                $this->setIdCategorie($value);
+                break;
+            case 4:
+                $this->setBrand($value);
+                break;
+            case 5:
+                $this->setLinkImage($value);
+                break;
         } // switch()
     }
 
@@ -776,6 +980,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
         if (array_key_exists($keys[0], $arr)) $this->setIdProduct($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setEanCode($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setIdCategorie($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setBrand($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setLinkImage($arr[$keys[5]]);
     }
 
     /**
@@ -790,6 +997,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
         if ($this->isColumnModified(ProductPeer::ID_PRODUCT)) $criteria->add(ProductPeer::ID_PRODUCT, $this->id_product);
         if ($this->isColumnModified(ProductPeer::EAN_CODE)) $criteria->add(ProductPeer::EAN_CODE, $this->ean_code);
         if ($this->isColumnModified(ProductPeer::NAME)) $criteria->add(ProductPeer::NAME, $this->name);
+        if ($this->isColumnModified(ProductPeer::ID_CATEGORIE)) $criteria->add(ProductPeer::ID_CATEGORIE, $this->id_categorie);
+        if ($this->isColumnModified(ProductPeer::BRAND)) $criteria->add(ProductPeer::BRAND, $this->brand);
+        if ($this->isColumnModified(ProductPeer::LINK_IMAGE)) $criteria->add(ProductPeer::LINK_IMAGE, $this->link_image);
 
         return $criteria;
     }
@@ -855,6 +1065,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
     {
         $copyObj->setEanCode($this->getEanCode());
         $copyObj->setName($this->getName());
+        $copyObj->setIdCategorie($this->getIdCategorie());
+        $copyObj->setBrand($this->getBrand());
+        $copyObj->setLinkImage($this->getLinkImage());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -923,6 +1136,58 @@ abstract class BaseProduct extends BaseObject implements Persistent
         }
 
         return self::$peer;
+    }
+
+    /**
+     * Declares an association between this object and a Categorie object.
+     *
+     * @param                  Categorie $v
+     * @return Product The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCategorie(Categorie $v = null)
+    {
+        if ($v === null) {
+            $this->setIdCategorie(NULL);
+        } else {
+            $this->setIdCategorie($v->getIdCategorie());
+        }
+
+        $this->aCategorie = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Categorie object, it will not be re-added.
+        if ($v !== null) {
+            $v->addProduct($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Categorie object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Categorie The associated Categorie object.
+     * @throws PropelException
+     */
+    public function getCategorie(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aCategorie === null && ($this->id_categorie !== null) && $doQuery) {
+            $this->aCategorie = CategorieQuery::create()->findPk($this->id_categorie, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCategorie->addProducts($this);
+             */
+        }
+
+        return $this->aCategorie;
     }
 
 
@@ -1021,7 +1286,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
                     if (false !== $this->collReviewsPartial && count($collReviews)) {
                       $this->initReviews(false);
 
-                      foreach($collReviews as $obj) {
+                      foreach ($collReviews as $obj) {
                         if (false == $this->collReviews->contains($obj)) {
                           $this->collReviews->append($obj);
                         }
@@ -1031,12 +1296,13 @@ abstract class BaseProduct extends BaseObject implements Persistent
                     }
 
                     $collReviews->getInternalIterator()->rewind();
+
                     return $collReviews;
                 }
 
-                if($partial && $this->collReviews) {
-                    foreach($this->collReviews as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collReviews) {
+                    foreach ($this->collReviews as $obj) {
+                        if ($obj->isNew()) {
                             $collReviews[] = $obj;
                         }
                     }
@@ -1064,7 +1330,11 @@ abstract class BaseProduct extends BaseObject implements Persistent
     {
         $reviewsToDelete = $this->getReviews(new Criteria(), $con)->diff($reviews);
 
-        $this->reviewsScheduledForDeletion = unserialize(serialize($reviewsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->reviewsScheduledForDeletion = clone $reviewsToDelete;
 
         foreach ($reviewsToDelete as $reviewRemoved) {
             $reviewRemoved->setProduct(null);
@@ -1098,7 +1368,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getReviews());
             }
             $query = ReviewQuery::create(null, $criteria);
@@ -1127,8 +1397,13 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $this->initReviews();
             $this->collReviewsPartial = true;
         }
+
         if (!in_array($l, $this->collReviews->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddReview($l);
+
+            if ($this->reviewsScheduledForDeletion and $this->reviewsScheduledForDeletion->contains($l)) {
+                $this->reviewsScheduledForDeletion->remove($this->reviewsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1264,7 +1539,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
                     if (false !== $this->collCustomerProductsPartial && count($collCustomerProducts)) {
                       $this->initCustomerProducts(false);
 
-                      foreach($collCustomerProducts as $obj) {
+                      foreach ($collCustomerProducts as $obj) {
                         if (false == $this->collCustomerProducts->contains($obj)) {
                           $this->collCustomerProducts->append($obj);
                         }
@@ -1274,12 +1549,13 @@ abstract class BaseProduct extends BaseObject implements Persistent
                     }
 
                     $collCustomerProducts->getInternalIterator()->rewind();
+
                     return $collCustomerProducts;
                 }
 
-                if($partial && $this->collCustomerProducts) {
-                    foreach($this->collCustomerProducts as $obj) {
-                        if($obj->isNew()) {
+                if ($partial && $this->collCustomerProducts) {
+                    foreach ($this->collCustomerProducts as $obj) {
+                        if ($obj->isNew()) {
                             $collCustomerProducts[] = $obj;
                         }
                     }
@@ -1307,7 +1583,11 @@ abstract class BaseProduct extends BaseObject implements Persistent
     {
         $customerProductsToDelete = $this->getCustomerProducts(new Criteria(), $con)->diff($customerProducts);
 
-        $this->customerProductsScheduledForDeletion = unserialize(serialize($customerProductsToDelete));
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->customerProductsScheduledForDeletion = clone $customerProductsToDelete;
 
         foreach ($customerProductsToDelete as $customerProductRemoved) {
             $customerProductRemoved->setProduct(null);
@@ -1341,7 +1621,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
                 return 0;
             }
 
-            if($partial && !$criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getCustomerProducts());
             }
             $query = CustomerProductQuery::create(null, $criteria);
@@ -1370,8 +1650,13 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $this->initCustomerProducts();
             $this->collCustomerProductsPartial = true;
         }
+
         if (!in_array($l, $this->collCustomerProducts->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
             $this->doAddCustomerProduct($l);
+
+            if ($this->customerProductsScheduledForDeletion and $this->customerProductsScheduledForDeletion->contains($l)) {
+                $this->customerProductsScheduledForDeletion->remove($this->customerProductsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1398,7 +1683,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
                 $this->customerProductsScheduledForDeletion = clone $this->collCustomerProducts;
                 $this->customerProductsScheduledForDeletion->clear();
             }
-            $this->customerProductsScheduledForDeletion[]= $customerProduct;
+            $this->customerProductsScheduledForDeletion[]= clone $customerProduct;
             $customerProduct->setProduct(null);
         }
 
@@ -1438,6 +1723,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
         $this->id_product = null;
         $this->ean_code = null;
         $this->name = null;
+        $this->id_categorie = null;
+        $this->brand = null;
+        $this->link_image = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
@@ -1452,7 +1740,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
      *
      * This method is a user-space workaround for PHP's inability to garbage collect
      * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
+     * when using Propel in certain daemon or large-volume/high-memory operations.
      *
      * @param boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -1470,6 +1758,9 @@ abstract class BaseProduct extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->aCategorie instanceof Persistent) {
+              $this->aCategorie->clearAllReferences($deep);
+            }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
@@ -1482,6 +1773,7 @@ abstract class BaseProduct extends BaseObject implements Persistent
             $this->collCustomerProducts->clearIterator();
         }
         $this->collCustomerProducts = null;
+        $this->aCategorie = null;
     }
 
     /**

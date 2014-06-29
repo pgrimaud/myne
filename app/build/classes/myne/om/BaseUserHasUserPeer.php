@@ -12,7 +12,7 @@ abstract class BaseUserHasUserPeer
 {
 
     /** the default database name for this class */
-    const DATABASE_NAME = 'myne';
+    const DATABASE_NAME = 'default';
 
     /** the table name for this class */
     const TABLE_NAME = 'user_has_user';
@@ -24,13 +24,16 @@ abstract class BaseUserHasUserPeer
     const TM_CLASS = 'UserHasUserTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
+
+    /** the column name for the id_match field */
+    const ID_MATCH = 'user_has_user.id_match';
 
     /** the column name for the id_user field */
     const ID_USER = 'user_has_user.id_user';
@@ -42,7 +45,7 @@ abstract class BaseUserHasUserPeer
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of UserHasUser objects.
+     * An identity map to hold any loaded instances of UserHasUser objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
      * @var        array UserHasUser[]
@@ -57,12 +60,12 @@ abstract class BaseUserHasUserPeer
      * e.g. UserHasUserPeer::$fieldNames[UserHasUserPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdUser', 'IdFacebookFriend', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idUser', 'idFacebookFriend', ),
-        BasePeer::TYPE_COLNAME => array (UserHasUserPeer::ID_USER, UserHasUserPeer::ID_FACEBOOK_FRIEND, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_USER', 'ID_FACEBOOK_FRIEND', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_user', 'id_facebook_friend', ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('IdMatch', 'IdUser', 'IdFacebookFriend', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idMatch', 'idUser', 'idFacebookFriend', ),
+        BasePeer::TYPE_COLNAME => array (UserHasUserPeer::ID_MATCH, UserHasUserPeer::ID_USER, UserHasUserPeer::ID_FACEBOOK_FRIEND, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_MATCH', 'ID_USER', 'ID_FACEBOOK_FRIEND', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_match', 'id_user', 'id_facebook_friend', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
@@ -72,12 +75,12 @@ abstract class BaseUserHasUserPeer
      * e.g. UserHasUserPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdUser' => 0, 'IdFacebookFriend' => 1, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idUser' => 0, 'idFacebookFriend' => 1, ),
-        BasePeer::TYPE_COLNAME => array (UserHasUserPeer::ID_USER => 0, UserHasUserPeer::ID_FACEBOOK_FRIEND => 1, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_USER' => 0, 'ID_FACEBOOK_FRIEND' => 1, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_user' => 0, 'id_facebook_friend' => 1, ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('IdMatch' => 0, 'IdUser' => 1, 'IdFacebookFriend' => 2, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idMatch' => 0, 'idUser' => 1, 'idFacebookFriend' => 2, ),
+        BasePeer::TYPE_COLNAME => array (UserHasUserPeer::ID_MATCH => 0, UserHasUserPeer::ID_USER => 1, UserHasUserPeer::ID_FACEBOOK_FRIEND => 2, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_MATCH' => 0, 'ID_USER' => 1, 'ID_FACEBOOK_FRIEND' => 2, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_match' => 0, 'id_user' => 1, 'id_facebook_friend' => 2, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
@@ -151,9 +154,11 @@ abstract class BaseUserHasUserPeer
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
+            $criteria->addSelectColumn(UserHasUserPeer::ID_MATCH);
             $criteria->addSelectColumn(UserHasUserPeer::ID_USER);
             $criteria->addSelectColumn(UserHasUserPeer::ID_FACEBOOK_FRIEND);
         } else {
+            $criteria->addSelectColumn($alias . '.id_match');
             $criteria->addSelectColumn($alias . '.id_user');
             $criteria->addSelectColumn($alias . '.id_facebook_friend');
         }
@@ -208,7 +213,7 @@ abstract class BaseUserHasUserPeer
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 UserHasUser
+     * @return UserHasUser
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -275,14 +280,14 @@ abstract class BaseUserHasUserPeer
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      UserHasUser $obj A UserHasUser object.
+     * @param UserHasUser $obj A UserHasUser object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getIdUser();
+                $key = (string) $obj->getIdMatch();
             } // if key === null
             UserHasUserPeer::$instances[$key] = $obj;
         }
@@ -305,7 +310,7 @@ abstract class BaseUserHasUserPeer
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
             if (is_object($value) && $value instanceof UserHasUser) {
-                $key = (string) $value->getIdUser();
+                $key = (string) $value->getIdMatch();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
@@ -325,7 +330,7 @@ abstract class BaseUserHasUserPeer
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   UserHasUser Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return UserHasUser Found object or null if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
@@ -346,10 +351,8 @@ abstract class BaseUserHasUserPeer
      */
     public static function clearInstancePool($and_clear_all_references = false)
     {
-      if ($and_clear_all_references)
-      {
-        foreach (UserHasUserPeer::$instances as $instance)
-        {
+      if ($and_clear_all_references) {
+        foreach (UserHasUserPeer::$instances as $instance) {
           $instance->clearAllReferences(true);
         }
       }
@@ -565,8 +568,7 @@ abstract class BaseUserHasUserPeer
                 } // if obj2 already loaded
 
                 // Add the $obj1 (UserHasUser) to $obj2 (User)
-                // one to one relationship
-                $obj1->setUser($obj2);
+                $obj2->addUserHasUser($obj1);
 
             } // if joined row was not null
 
@@ -687,7 +689,7 @@ abstract class BaseUserHasUserPeer
                 } // if obj2 loaded
 
                 // Add the $obj1 (UserHasUser) to the collection in $obj2 (User)
-                $obj1->setUser($obj2);
+                $obj2->addUserHasUser($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -716,7 +718,7 @@ abstract class BaseUserHasUserPeer
     {
       $dbMap = Propel::getDatabaseMap(BaseUserHasUserPeer::DATABASE_NAME);
       if (!$dbMap->hasTable(BaseUserHasUserPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new UserHasUserTableMap());
+        $dbMap->addTableObject(new \UserHasUserTableMap());
       }
     }
 
@@ -752,6 +754,10 @@ abstract class BaseUserHasUserPeer
             $criteria = $values->buildCriteria(); // build Criteria from UserHasUser object
         }
 
+        if ($criteria->containsKey(UserHasUserPeer::ID_MATCH) && $criteria->keyContainsValue(UserHasUserPeer::ID_MATCH) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserHasUserPeer::ID_MATCH.')');
+        }
+
 
         // Set the correct dbName
         $criteria->setDbName(UserHasUserPeer::DATABASE_NAME);
@@ -762,7 +768,7 @@ abstract class BaseUserHasUserPeer
             $con->beginTransaction();
             $pk = BasePeer::doInsert($criteria, $con);
             $con->commit();
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -790,10 +796,10 @@ abstract class BaseUserHasUserPeer
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(UserHasUserPeer::ID_USER);
-            $value = $criteria->remove(UserHasUserPeer::ID_USER);
+            $comparison = $criteria->getComparison(UserHasUserPeer::ID_MATCH);
+            $value = $criteria->remove(UserHasUserPeer::ID_MATCH);
             if ($value) {
-                $selectCriteria->add(UserHasUserPeer::ID_USER, $value, $comparison);
+                $selectCriteria->add(UserHasUserPeer::ID_MATCH, $value, $comparison);
             } else {
                 $selectCriteria->setPrimaryTableName(UserHasUserPeer::TABLE_NAME);
             }
@@ -835,7 +841,7 @@ abstract class BaseUserHasUserPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -872,7 +878,7 @@ abstract class BaseUserHasUserPeer
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
-            $criteria->add(UserHasUserPeer::ID_USER, (array) $values, Criteria::IN);
+            $criteria->add(UserHasUserPeer::ID_MATCH, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
                 UserHasUserPeer::removeInstanceFromPool($singleval);
@@ -894,7 +900,7 @@ abstract class BaseUserHasUserPeer
             $con->commit();
 
             return $affectedRows;
-        } catch (PropelException $e) {
+        } catch (Exception $e) {
             $con->rollBack();
             throw $e;
         }
@@ -907,7 +913,7 @@ abstract class BaseUserHasUserPeer
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      UserHasUser $obj The object to validate.
+     * @param UserHasUser $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -940,7 +946,7 @@ abstract class BaseUserHasUserPeer
     /**
      * Retrieve a single object by pkey.
      *
-     * @param      int $pk the primary key.
+     * @param int $pk the primary key.
      * @param      PropelPDO $con the connection to use
      * @return UserHasUser
      */
@@ -956,7 +962,7 @@ abstract class BaseUserHasUserPeer
         }
 
         $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
-        $criteria->add(UserHasUserPeer::ID_USER, $pk);
+        $criteria->add(UserHasUserPeer::ID_MATCH, $pk);
 
         $v = UserHasUserPeer::doSelect($criteria, $con);
 
@@ -983,7 +989,7 @@ abstract class BaseUserHasUserPeer
             $objs = array();
         } else {
             $criteria = new Criteria(UserHasUserPeer::DATABASE_NAME);
-            $criteria->add(UserHasUserPeer::ID_USER, $pks, Criteria::IN);
+            $criteria->add(UserHasUserPeer::ID_MATCH, $pks, Criteria::IN);
             $objs = UserHasUserPeer::doSelect($criteria, $con);
         }
 
