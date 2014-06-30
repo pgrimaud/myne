@@ -105,6 +105,33 @@ body { padding-top: 70px; }
  *
  */
 
+.frame {
+	padding: 0 15px 0 15px; 
+	border: 1px solid #eeeeee;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+.product-title {
+	color: #3933F3;
+}
+.img-product {
+	width: 65%;
+	margin-top: 15px;
+	
+}
+.product-search-div {
+	width: 140px;
+	margin: 10px;
+	float: left;
+}
+.img-search {
+	width: 100px;
+}
+.h4-related {
+	text-align: center;
+}
+.img-180 { width: 180px; }
 #push { height: 192px; }
 
 /**

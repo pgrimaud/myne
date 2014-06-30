@@ -16,9 +16,7 @@
                 </li>
             </ul>
             <form class="navbar-form navbar-right" role="search" id="search-input">
-                <div class="form-group">
-                    <input type="text" class="form-control">
-                </div> <button type="submit" class="btn btn-default">Rechercher</button>
+				<button type="submit" class="btn btn-default isopouet">Recherche de Produit</button>
             </form>
         </div>
     </div>

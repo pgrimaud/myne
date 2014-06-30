@@ -154,3 +154,15 @@ $("form[name=addReview]").submit(function(e) {
         }
     )
 })
+
+$(".isopouet").click(function(e) {
+	e.preventDefault()
+	window.location = "search_product.php";
+})
+
+/*var $container = $("#container")
+
+$container.isotope({
+	itemSelector: '.item',
+	layoutMode: 'fitRows'
+})*/
