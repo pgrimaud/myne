@@ -21,16 +21,16 @@
         <script src="js/ie/html5.js"></script>
                     <script src="js/ie/respond.min.js"></script>
     <![endif]-->
-    
+
     <script src="/js/jquery.min.js"></script>
-    
+
   </head>
   <body>
     <div id="maincontainer" class="clearfix">
       <!-- header -->
       <header>
         <div class="navbar navbar-fixed-top">
-          <div class="navbar-inner">
+          <div class="navbar-inner" style="background-color:#058dc7;">
             <div class="container-fluid" style="margin-top:5px;">
               <a class="brand" href="/">Myne Backoffice</a>
               <ul class="nav user_menu pull-right">
@@ -48,7 +48,7 @@
                       <a href="/product/all/">Vos produits</a>
                     </li>
                     <li>
-                      <a href="/product/add/">Ajouter un produit</a>
+                      <a href="/campaign/all/">Vos campagnes</a>
                     </li>
                     <li>
                       <a href="/help/">Aide</a>
