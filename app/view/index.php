@@ -4,7 +4,7 @@
         <div class="col-md-12 column">
             <div class="jumbotron">
                 <h1>
-                    Bonjour {firstname}!
+                    Bonjour Pierre!
                 </h1>
                 <p>
                     Un avis à partager sur un produit?! Myne est là pour ça!

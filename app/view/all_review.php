@@ -10,7 +10,7 @@
 					->filterByIdUser($user->getIdUser())
 					->find();
 	
-	$aFriend = UserHasUserQuery::create()
+/*	$aFriend = UserHasUserQuery::create()
 					->filterByIdUser($user->getIdUser())
 					->find()
 					->toArray();
@@ -25,7 +25,7 @@
 	$oFriendReview = ReviewQuery::create()
 						->joinUser()
 						->where("User.IdFacebook IN ?", $tmp)
-						->find();
+						->find();*/
 									
 ?>
     <div class="container">
