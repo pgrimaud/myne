@@ -29,10 +29,6 @@
 									
 ?>
     <div class="container">
-        <div>
-        </div>
-    </div>
-    <div class="container">
         <!--h1>// ajout avis</h1-->
         <?php
             $oReview = ReviewQuery::create()
@@ -64,6 +60,20 @@
 						}
 					?>
 					</div>
+					<div>
+					<?php
+						$nbComments = CommentQuery::create()
+										->filterByIdReview($review->getIdReview())
+										->count();
+										
+						if($nbComments > 0)
+							echo "<a href=\"review.php?id=".$review->getIdReview()."\">Aucun commentaire</a>";
+						elseif($nbComments == 1)
+							echo "<a href=\"review.php?id=".$review->getIdReview()."\">{$nbComments} commentaire!</a>";
+						else
+							echo "<a href=\"review.php?id=".$review->getIdReview()."\">{$nbComments} commentaires!</a>";
+					?>
+					</div>
 				</div>
 		</div>
 		<?php 
@@ -92,6 +102,20 @@
 							for($c = $a; $c < 5; $c++) {
 								echo "<span class=\"glyphicon glyphicon-star-empty\"></span>";
 							}
+						?>
+						</div>
+						<div>
+						<?php
+							$nbComments = CommentQuery::create()
+											->filterByIdReview($review->getIdReview())
+											->count();
+											
+							if($nbComments > 0)
+								echo "<a href=\"review.php?id=".$review->getIdReview()."\">Aucun commentaire</a>";
+							elseif($nbComments == 1)
+								echo "<a href=\"review.php?id=".$review->getIdReview()."\">{$nbComments} commentaire!</a>";
+							else
+								echo "<a href=\"review.php?id=".$review->getIdReview()."\">{$nbComments} commentaires!</a>";
 						?>
 						</div>
 					</div>

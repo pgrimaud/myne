@@ -106,7 +106,7 @@ body { padding-top: 70px; }
  */
 
 .frame {
-	padding: 0 15px 0 15px; 
+	padding: 0 15px 15px 15px; 
 	border: 1px solid #eeeeee;
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
