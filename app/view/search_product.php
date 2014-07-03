@@ -1,6 +1,7 @@
 <?php
 	if(!isset($_GET["input"]) || $_GET["input"] == "") {
 		header('location: all_review.php');
+		exit;
 	}
 
     include 'header.php';

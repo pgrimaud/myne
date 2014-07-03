@@ -93,10 +93,13 @@
         <div class="col-md-12 column">
         <h3 class="text-center">- <?php echo ($nbReview == 1) ? "Mon dernier avis" : "Mes {$nbReview} derniers avis"; ?> -</h3>
             <div class="row">
-            <?php foreach ($oReview as $review) : ?>
+            <?php
+				foreach ($oReview as $review) : 
+					$product = $review->getProduct();
+			?>
                 <div class="col-md-4">
                     <div class="thumbnail">
-                        <img alt="300x200" src="http://lorempixel.com/600/200/technics">
+                        <img alt="300x200" style="width: 116px;" src="<?php echo $product->getLinkImage(); ?>">
                         <div class="caption">
                             <h3><a href="self_review.php?id_review=<?php echo $review->getIdReview(); ?>" title="Voir l'avis"><?php echo $review->getTitle(); ?></a></h3>
                             <p><?php echo nl2br($review->getContent()); ?></p>

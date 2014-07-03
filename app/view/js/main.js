@@ -154,3 +154,24 @@ $("form[name=addReview]").submit(function(e) {
         }
     )
 })
+
+$(".btn-add-comment").click(function(e) {
+	e.preventDefault()
+	var content = $("#addComment").val()
+	,	idReview = $("input[name=idReview]").val()
+	,	idUser = $("input[name=idUser]").val()
+	
+	$.post(
+		"../handler/comment.php",
+		{
+			"idReview" 	: idReview,
+			"idUser"	: idUser,
+			"content"	: content
+		},
+		function(data) {
+			console.log(data)
+			alertify.success("Commentaire ajouté avec succès!")
+			setTimeout(function() { window.location.reload(); }, 2000);
+		}
+	)
+})
