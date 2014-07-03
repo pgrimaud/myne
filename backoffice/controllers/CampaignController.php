@@ -9,5 +9,9 @@ class CampaignController extends FrontController {
   protected function AddAction() {
     
   }
+  
+  protected function ShowAction($id) {
+    
+  }
 
 }
