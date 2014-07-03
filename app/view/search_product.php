@@ -25,7 +25,7 @@
 			echo "<div class=\"product-search-div col-md-3\">";
 			echo "<span>".utf8_decode($product->getName())."</span>";
 			echo "<img class=\"img-search\" src=\"{$product->getLinkImage()}\"/>";
-			echo "<a href=\"\">Voir le produit</a>";
+			echo "<a class=\"from-global-search\" data-id-product=\"{$product->getIdProduct()}\" href=\"\">Ajouter un avis</a>";
 			echo "</div>";
 			
 			if(($i % 6) == 0) {

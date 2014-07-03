@@ -7,7 +7,7 @@ if(isset($_POST["searchProduct"]) && $_POST["searchProduct"]) {
     $product = ProductQuery::create();
 
     if(!is_numeric($data)) {
-        $product = $product->filterByName($data);
+        $product = $product->filterByName("%".utf8_encode($data)."%");
     } else {
         if(strlen($data) != 13) {
             echo "KO";
