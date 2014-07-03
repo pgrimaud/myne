@@ -6,15 +6,15 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema myne
+-- Schema lovely_ads
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `myne` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `myne` ;
+-- CREATE SCHEMA IF NOT EXISTS `lovely_ads` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `lovely_ads` ;
 
 -- -----------------------------------------------------
--- Table `myne`.`user`
+-- Table `lovely_ads`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`user` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`user` (
   `id_user` INT NOT NULL AUTO_INCREMENT,
   `id_facebook` VARCHAR(255) NULL,
   `first_name` VARCHAR(255) NULL,
@@ -32,9 +32,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`categorie`
+-- Table `lovely_ads`.`categorie`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`categorie` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`categorie` (
   `id_categorie` INT NOT NULL AUTO_INCREMENT,
   `name_categorie` TEXT NULL,
   PRIMARY KEY (`id_categorie`))
@@ -42,9 +42,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`product`
+-- Table `lovely_ads`.`product`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`product` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`product` (
   `id_product` INT NOT NULL AUTO_INCREMENT,
   `ean_code` VARCHAR(255) NULL,
   `name` VARCHAR(255) NULL,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `myne`.`product` (
   INDEX `id_categorie_idx` (`id_categorie` ASC),
   CONSTRAINT `id_categorie`
     FOREIGN KEY (`id_categorie`)
-    REFERENCES `myne`.`categorie` (`id_categorie`)
+    REFERENCES `lovely_ads`.`categorie` (`id_categorie`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -64,9 +64,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`review`
+-- Table `lovely_ads`.`review`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`review` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`review` (
   `id_review` INT NOT NULL AUTO_INCREMENT,
   `id_user` INT NOT NULL,
   `id_product` INT NOT NULL,
@@ -81,12 +81,12 @@ CREATE TABLE IF NOT EXISTS `myne`.`review` (
   INDEX `fk_review_product1_idx` (`id_product` ASC),
   CONSTRAINT `fk_review_user`
     FOREIGN KEY (`id_user`)
-    REFERENCES `myne`.`user` (`id_user`)
+    REFERENCES `lovely_ads`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_review_product1`
     FOREIGN KEY (`id_product`)
-    REFERENCES `myne`.`product` (`id_product`)
+    REFERENCES `lovely_ads`.`product` (`id_product`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -95,9 +95,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`comment`
+-- Table `lovely_ads`.`comment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`comment` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`comment` (
   `id_comment` INT NOT NULL AUTO_INCREMENT,
   `id_review` INT NOT NULL,
   `id_user` INT NOT NULL,
@@ -109,12 +109,12 @@ CREATE TABLE IF NOT EXISTS `myne`.`comment` (
   INDEX `fk_comment_user1_idx` (`id_user` ASC),
   CONSTRAINT `fk_comment_review1`
     FOREIGN KEY (`id_review`)
-    REFERENCES `myne`.`review` (`id_review`)
+    REFERENCES `lovely_ads`.`review` (`id_review`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_comment_user1`
     FOREIGN KEY (`id_user`)
-    REFERENCES `myne`.`user` (`id_user`)
+    REFERENCES `lovely_ads`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -123,9 +123,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`edition`
+-- Table `lovely_ads`.`edition`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`edition` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`edition` (
   `id_edition` INT NOT NULL AUTO_INCREMENT,
   `id_review` INT NOT NULL,
   `content` TEXT NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `myne`.`edition` (
   INDEX `fk_edition_review1_idx` (`id_review` ASC),
   CONSTRAINT `fk_edition_review1`
     FOREIGN KEY (`id_review`)
-    REFERENCES `myne`.`review` (`id_review`)
+    REFERENCES `lovely_ads`.`review` (`id_review`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -149,16 +149,16 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`user_has_user`
+-- Table `lovely_ads`.`user_has_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`user_has_user` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`user_has_user` (
   `id_match` INT NOT NULL AUTO_INCREMENT,
   `id_user` INT NOT NULL,
   `id_facebook_friend` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id_match`),
   CONSTRAINT `fk_user_has_user_user1`
     FOREIGN KEY (`id_user`)
-    REFERENCES `myne`.`user` (`id_user`)
+    REFERENCES `lovely_ads`.`user` (`id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -167,9 +167,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`customer`
+-- Table `lovely_ads`.`customer`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`customer` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`customer` (
   `id_customer` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `email` VARCHAR(255) NULL,
@@ -183,21 +183,21 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `myne`.`customer_product`
+-- Table `lovely_ads`.`customer_product`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `myne`.`customer_product` (
+CREATE TABLE IF NOT EXISTS `lovely_ads`.`customer_product` (
   `id_customer` INT NOT NULL,
   `id_product` INT NOT NULL,
   INDEX `id_product_idx` (`id_product` ASC),
   PRIMARY KEY (`id_customer`, `id_product`),
   CONSTRAINT `id_product`
     FOREIGN KEY (`id_product`)
-    REFERENCES `myne`.`product` (`id_product`)
+    REFERENCES `lovely_ads`.`product` (`id_product`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `id_customer`
     FOREIGN KEY (`id_customer`)
-    REFERENCES `myne`.`customer` (`id_customer`)
+    REFERENCES `lovely_ads`.`customer` (`id_customer`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
