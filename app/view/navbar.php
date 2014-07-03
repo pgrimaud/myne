@@ -15,7 +15,10 @@
                     <a href="<?php echo VIEW_URL; ?>/all_review.php">Tous les avis</a>
                 </li>
             </ul>
-            <form class="navbar-form navbar-right" role="search" id="search-input">
+            <form class="navbar-form navbar-right" role="search" id="search-input" method="GET" action="search_product.php">
+				<div class="form-group">
+                    <input type="text" class="form-control" name="input">
+                </div> 
 				<button type="submit" class="btn btn-default isopouet">Recherche de Produit</button>
             </form>
         </div>
