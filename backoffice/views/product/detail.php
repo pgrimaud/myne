@@ -25,10 +25,9 @@
             <?php if (sizeof($controller->getData()->reviews) > 0): ?>
               <?php foreach ($controller->getData()->reviews as $review): ?>
                 <div class="span12" style="border-bottom:1px solid #dcdcdc;margin-left:5px;padding-bottom:10px;">
-                  <div style="float:left;width:15%;"><img src="https://graph.facebook.com/<?php echo $review['id_facebook']; ?>/picture" style="width:85px;"/></div>
-                  <div style="float:right;width:85%;">
-                    Par : <?php echo $review['first_name']; ?> <?php echo $review['last_name']; ?>
-                    le <?php echo $review['date']; ?><br/>
+                  <!--<div style="float:left;width:15%;"><img src="https://graph.facebook.com/<?php echo $review['id_facebook']; ?>/picture" style="width:85px;"/></div>-->
+                  <div style="float:right;width:100%;">
+                    Le <?php echo $review['date']; ?><br/>
                     Note : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo $review['rate']; ?>/5</label><br/>
                     Titre : <?php echo $review['title']; ?><br/>
                     <p>Contenu : <?php echo $review['content']; ?></p>
@@ -39,14 +38,13 @@
                   <?php if (sizeof($controller->getData()->comments[$review['id_review']]) > 0): ?>
                     <?php foreach ($controller->getData()->comments[$review['id_review']] as $comment): ?>
 
-                      <div style="float:right;width:70%;padding-top:5px;border-bottom:1px solid #dcdcdc;">
-                        Par : <?php echo $comment['first_name']; ?> <?php echo $comment['last_name']; ?>
-                        le <?php echo $comment['date']; ?><br/>
+                      <div style="float:right;width:75%;padding-top:5px;border-bottom:1px solid #dcdcdc;">
+                        Le <?php echo $comment['date']; ?><br/>
                         <p>Contenu : <?php echo $comment['content']; ?></p>
                       </div>
-                      <div style="float:right;margin-right:15px;margin-top:7px;">
+                      <!--<div style="float:right;margin-right:15px;margin-top:7px;">
                         <img src="https://graph.facebook.com/<?php echo $comment['id_facebook']; ?>/picture" style="width:35px;"/>
-                      </div>
+                      </div>-->
                     <?php endforeach; ?>
                   <?php else: ?>
                     <span class="badge badge-info" style="margin-left:30px;">Pas de commentaires.</span>

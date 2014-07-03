@@ -71,8 +71,7 @@
               <img src="<?php echo $review['link_image']; ?>" style="max-height:100px;max-width:100px;float:left;margin-right:5px;" />
               <div style="float:left;width:85%;">
                 Avis du produit : <label class="badge badge-inverse"><?php echo $review['name']; ?></label><br/>
-                Par : <?php echo $review['first_name']; ?> <?php echo $review['last_name']; ?>
-                le <?php echo $review['date']; ?><br/>
+                Le <?php echo $review['date']; ?><br/>
                 Note : <label class="badge badge-<?php echo $controller->getData()->color[(int) $review['rate']]; ?>"><?php echo $review['rate']; ?>/5</label><br/>
                 Titre : <?php echo $review['title']; ?><br/>
                 <p>Contenu : <?php echo $review['content']; ?></p>
