@@ -8,8 +8,25 @@
 ?>
 <div class="container">
     <div class="row clearfix">
+	<?php
+		if(isset($_GET["idproduct"]) && $_GET["idproduct"] != ""):
+			$product = ProductQuery::create()
+						->findOneByIdProduct($_GET["idproduct"]);
+			if($product):
+	?>
         <h1 class="text-center">Rédiger votre avis!</h1>
-        <form role="form form-horizontal" id="formSearchProduct">
+        <form role="form form-horizontal" id="formSearchProduct" style="display:none;">
+            <div class="form-group">
+                 <label for="searchProduct" class="control-label">Sur quel produit souhaitez donner votre avis?</label><input type="text" class="form-control" id="searchProduct" placeholder="code EAN ou le nom du produit">
+            </div> <button type="submit" class="btn btn-primary" id="btn_searchProduct">Rechercher</button>
+        </form>
+        <div id="infoProduct">
+            <h2><?php echo utf8_decode($product->getName()); ?></h2>
+            <p><?php echo $product->getEanCode(); ?></p>
+            <button type="button" class="btn btn-primary" id="btn_searchAnotherProduct">Changer de Produit</button>
+        </div>
+	<?php else: ?>
+		<form role="form form-horizontal" id="formSearchProduct">
             <div class="form-group">
                  <label for="searchProduct" class="control-label">Sur quel produit souhaitez donner votre avis?</label><input type="text" class="form-control" id="searchProduct" placeholder="code EAN ou le nom du produit">
             </div> <button type="submit" class="btn btn-primary" id="btn_searchProduct">Rechercher</button>
@@ -19,6 +36,7 @@
             <p></p>
             <button type="button" class="btn btn-primary" id="btn_searchAnotherProduct">Changer de Produit</button>
         </div>
+	<?php endif; endif; ?>
         <div class="modal fade" id="addProductModal">
             <div class="modal-dialog">
                 <div class="modal-content">

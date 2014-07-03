@@ -7,6 +7,12 @@ $("#searchProduct, #reviewTitle, #reviewContent, #productName, #productEan").key
         $(this).parent().removeClass("has-error")
 })
 
+$(".from-global-search").click(function(e) {
+	e.preventDefault()
+	var idProduct = $(this).attr("data-id-product")
+	window.location.href = 'add_review.php?idproduct=' + idProduct
+})
+
 $("#btn_searchProduct").click(function(e) {
     e.preventDefault()
     var data = $("#searchProduct").val()
@@ -24,6 +30,7 @@ $("#btn_searchProduct").click(function(e) {
             "data" : data
         },
         function(data) {
+			console.log(data)
             var KO  = /KO/
             ,   NF  = /NOT FOUND/
 
