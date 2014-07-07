@@ -9,14 +9,14 @@ class Client {
 
     $this->mail = $mail;
 
-    Connexion::getInstance()->query("SELECT * FROM customer WHERE email = '" . $mail . "' ");
+    Connexion::getInstance()->query("SELECT * FROM seller WHERE email = '" . $mail . "' ");
     $infos = Connexion::getInstance()->fetchObject();
 
     $this->infos = $infos;
   }
 
   public function getID() {
-    return $this->infos->id_customer;
+    return $this->infos->id_seller;
   }
 
   public function getMail() {
